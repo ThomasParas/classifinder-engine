@@ -1,0 +1,69 @@
+# ClassiFinder Engine
+
+The open-source core of [ClassiFinder](https://classifinder.tech) — the secret scanner built for AI pipelines.
+
+This is the code that touches your data. It's published here so you can read it yourself and verify that it does exactly what we claim: scan text for secrets, return findings, and discard everything. No I/O, no side effects, no storage.
+
+## What's Here
+
+The scanner engine is a pure function: **text in, findings out.** It has no database calls, no file writes, no network requests, no logging of secret values. It runs entirely in memory.
+
+```
+classifinder-engine/
+├── scanner.py          # Core scan() function — the heart of the product
+├── redactor.py         # redact() function — replaces secrets with safe labels
+├── entropy.py          # Shannon entropy calculator for confidence scoring
+└── patterns/
+    ├── registry.py     # Pattern registry and SecretPattern dataclass
+    ├── cloud.py        # AWS, GCP, Azure, DigitalOcean, Heroku, Cloudflare (9 patterns)
+    ├── payment.py      # Stripe, PayPal, Square, credit cards with Luhn validation (8 patterns)
+    ├── vcs.py          # GitHub, GitLab, Bitbucket, CircleCI (9 patterns)
+    ├── comms.py        # Slack, Twilio, SendGrid, Mailgun, Discord, Telegram (9 patterns)
+    ├── database.py     # PostgreSQL, MySQL, MongoDB, Redis, SSH keys, .env passwords (7 patterns)
+    ├── generic.py      # JWT, Bearer, Basic Auth, generic API keys, high-entropy strings (5 patterns)
+    └── ai.py           # OpenAI, Anthropic, Cohere (3 patterns)
+```
+
+**50 detection patterns** across 7 categories. Each pattern includes a regex, base confidence score, entropy threshold, context keywords, known test values, and remediation guidance.
+
+## How It Works
+
+```python
+from scanner import scan
+from redactor import redact
+
+# Scan text for secrets
+findings = scan("AWS_ACCESS_KEY_ID=AKIAJGKJHSKLDJFH3284")
+# Returns: [Finding(type="aws_access_key", confidence=0.95, severity="critical", ...)]
+
+# Redact secrets from text
+redacted_text, redaction_map = redact(text, findings, style="label")
+# Returns: ("AWS_ACCESS_KEY_ID=[AWS_ACCESS_KEY_REDACTED]", [...])
+```
+
+The `scan()` function:
+1. Runs all 50 regex patterns against the input
+2. Calculates confidence using: base score + context keyword boost - entropy penalty - test value penalty
+3. Deduplicates overlapping findings (highest confidence wins)
+4. Returns structured findings sorted by position
+
+The `redact()` function:
+1. Takes scan findings and replaces each secret in the original text
+2. Processes spans in reverse order so replacements don't shift offsets
+3. Supports three styles: `label` → `[AWS_ACCESS_KEY_REDACTED]`, `mask` → `AKIA**************`, `hash` → `[REDACTED:sha256:a1b2c3d4]`
+
+## What's NOT Here
+
+The hosted API layer (routes, middleware, auth, rate limiting, key provisioning) is not open-source. That's the business. What's here is the code that processes your text — the part you'd want to audit.
+
+## Dockerfile
+
+The included `Dockerfile` shows exactly what runs in production: Python 3.12, FastAPI, Uvicorn. No database driver, no persistent volume, no logging SDK that captures request bodies. A container with a small surface area.
+
+## The Hosted Service
+
+Don't want to run this yourself? [ClassiFinder](https://classifinder.tech) wraps this engine in a fast, stateless API with auth, rate limiting, a Python SDK (`pip install classifinder`), and a LangChain integration. Free tier: 10,000 requests/month.
+
+## License
+
+MIT
