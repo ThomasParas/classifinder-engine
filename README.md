@@ -1,6 +1,6 @@
 # ClassiFinder Engine
 
-The open-source core of [ClassiFinder](https://classifinder.tech) — the secret scanner built for AI pipelines.
+The open-source core of [ClassiFinder](https://classifinder.ai) — the secret scanner built for AI pipelines.
 
 This is the code that touches your data. It's published here so you can read it yourself and verify that it does exactly what we claim: scan text for secrets, return findings, and discard everything. No I/O, no side effects, no storage.
 
@@ -62,7 +62,7 @@ The included `Dockerfile` shows exactly what runs in production: Python 3.12, Fa
 
 ## The Hosted Service
 
-Don't want to run this yourself? [ClassiFinder](https://classifinder.tech) wraps this engine in a fast, stateless API with auth, rate limiting, a Python SDK (`pip install classifinder`), and a LangChain integration. Free tier: 10,000 requests/month.
+Don't want to run this yourself? [ClassiFinder](https://classifinder.ai) wraps this engine in a fast, stateless API with auth, rate limiting, a Python SDK (`pip install classifinder`), and a LangChain integration. Free tier: 10,000 requests/month.
 
 ## License
 
