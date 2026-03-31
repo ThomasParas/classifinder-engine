@@ -62,7 +62,7 @@ The included `Dockerfile` shows exactly what runs in production: Python 3.12, Fa
 
 ## The Hosted Service
 
-Don't want to run this yourself? [ClassiFinder](https://classifinder.ai) wraps this engine in a fast, stateless API with auth, rate limiting, a Python SDK (`pip install classifinder`), and a LangChain integration. Free tier: 10,000 requests/month.
+Don't want to run this yourself? [ClassiFinder](https://classifinder.ai) wraps this engine in a fast, stateless API with auth, rate limiting, a Python SDK (`pip install classifinder`), and a LangChain integration. Free tier: 60 requests/minute, no credit card required.
 
 ## License
 
