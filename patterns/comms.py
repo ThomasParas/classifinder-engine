@@ -475,6 +475,168 @@ NOTION_API_KEY = SecretPattern(
 )
 
 
+# ===================================================
+# SENTRY
+# ===================================================
+
+SENTRY_ORG_TOKEN = SecretPattern(
+    id="sentry_org_token",
+    name="Sentry Organization Auth Token",
+    description=(
+        "Sentry organization auth token with sntrys_ prefix."
+        " Contains a base64-encoded JWT payload."
+        " Grants organization-level access to Sentry."
+    ),
+    provider="sentry",
+    severity="critical",
+    regex=re.compile(
+        r"(?P<secret>sntrys_eyJ[A-Za-z0-9+/=_]{80,300})"
+        r"(?![A-Za-z0-9+/=_])",
+        re.ASCII
+    ),
+    confidence_base=0.97,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "sentry", "SENTRY_AUTH_TOKEN", "sentry_token", "sntrys",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this token at sentry.io under Settings > Auth Tokens."
+        " Organization tokens grant broad access — rotate immediately."
+    ),
+    tags=["monitoring", "sentry"],
+)
+
+
+SENTRY_USER_TOKEN = SecretPattern(
+    id="sentry_user_token",
+    name="Sentry User Auth Token",
+    description=(
+        "Sentry user auth token with sntryu_ prefix"
+        " followed by 64 hex characters."
+    ),
+    provider="sentry",
+    severity="critical",
+    regex=re.compile(
+        r"(?P<secret>sntryu_[a-f0-9]{64})"
+        r"(?![a-f0-9])",
+        re.ASCII
+    ),
+    confidence_base=0.97,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "sentry", "SENTRY_AUTH_TOKEN", "sentry_token", "sntryu",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this token at sentry.io under User Settings > Auth Tokens."
+    ),
+    tags=["monitoring", "sentry"],
+)
+
+
+# ===================================================
+# DATADOG
+# ===================================================
+
+DATADOG_API_KEY = SecretPattern(
+    id="datadog_api_key",
+    name="Datadog API Key",
+    description=(
+        "Datadog API key, a 32-character hex string."
+        " Detected when preceded by Datadog-specific context keywords."
+    ),
+    provider="datadog",
+    severity="high",
+    regex=re.compile(
+        r"(?:"
+        r"(?:DD_API_KEY|DATADOG_API_KEY|datadog.*api.*key)"
+        r"[\s]*[=:\"'\s]+"
+        r")"
+        r"(?P<secret>[a-f0-9]{32})"
+        r"(?![a-f0-9])",
+        re.ASCII | re.IGNORECASE
+    ),
+    confidence_base=0.70,
+    entropy_threshold=3.0,
+    context_keywords=[
+        "datadog", "DD_API_KEY", "DATADOG_API_KEY", "dd_api",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key in Datadog under Organization Settings > API Keys."
+        " Generate a new key and update your agents and integrations."
+    ),
+    tags=["monitoring", "datadog"],
+)
+
+
+DATADOG_APP_KEY = SecretPattern(
+    id="datadog_app_key",
+    name="Datadog Application Key",
+    description=(
+        "Datadog application key, a 40-character hex string."
+        " Detected when preceded by Datadog-specific context keywords."
+    ),
+    provider="datadog",
+    severity="high",
+    regex=re.compile(
+        r"(?:"
+        r"(?:DD_APP_KEY|DATADOG_APP_KEY|datadog.*app.*key)"
+        r"[\s]*[=:\"'\s]+"
+        r")"
+        r"(?P<secret>[a-f0-9]{40})"
+        r"(?![a-f0-9])",
+        re.ASCII | re.IGNORECASE
+    ),
+    confidence_base=0.70,
+    entropy_threshold=3.0,
+    context_keywords=[
+        "datadog", "DD_APP_KEY", "DATADOG_APP_KEY", "dd_app",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key in Datadog under Organization Settings > Application Keys."
+    ),
+    tags=["monitoring", "datadog"],
+)
+
+
+# ===================================================
+# PAGERDUTY
+# ===================================================
+
+PAGERDUTY_API_KEY = SecretPattern(
+    id="pagerduty_api_key",
+    name="PagerDuty API Key",
+    description=(
+        "PagerDuty REST API key with u+ prefix and structured format."
+        " Detected when PagerDuty context is present."
+    ),
+    provider="pagerduty",
+    severity="high",
+    regex=re.compile(
+        r"(?:"
+        r"(?:PAGERDUTY_API_KEY|pagerduty.*key|pagerduty.*token|pager_duty)"
+        r"[\s]*[=:\"'\s]+"
+        r")"
+        r"(?P<secret>u\+[a-zA-Z0-9_+\-]{18})"
+        r"(?![a-zA-Z0-9_+\-])",
+        re.ASCII | re.IGNORECASE
+    ),
+    confidence_base=0.80,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "pagerduty", "pager_duty", "PAGERDUTY_API_KEY", "pd_api",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key in PagerDuty under Integrations > API Access Keys."
+    ),
+    tags=["monitoring", "pagerduty"],
+)
+
+
 register(
     SLACK_BOT_TOKEN,
     SLACK_USER_TOKEN,
@@ -491,4 +653,9 @@ register(
     GRAFANA_API_KEY,
     LINEAR_API_KEY,
     NOTION_API_KEY,
+    SENTRY_ORG_TOKEN,
+    SENTRY_USER_TOKEN,
+    DATADOG_API_KEY,
+    DATADOG_APP_KEY,
+    PAGERDUTY_API_KEY,
 )

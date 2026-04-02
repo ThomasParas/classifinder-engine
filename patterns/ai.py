@@ -217,6 +217,43 @@ GROQ_API_KEY = SecretPattern(
 )
 
 
+# ===================================================
+# DEEPSEEK
+# ===================================================
+
+DEEPSEEK_API_KEY = SecretPattern(
+    id="deepseek_api_key",
+    name="DeepSeek API Key",
+    description=(
+        "DeepSeek API key with sk- prefix and 32 lowercase alphanumeric characters."
+        " Shares the sk- prefix with OpenAI but uses shorter, hex-like values."
+        " Detected only when DeepSeek context keywords are present."
+    ),
+    provider="deepseek",
+    severity="critical",
+    regex=re.compile(
+        r"(?:"
+        r"(?:DEEPSEEK_API_KEY|deepseek.*api.*key|deepseek.*key|deepseek)"
+        r"[\s]*[=:\"'\s]+"
+        r")"
+        r"(?P<secret>sk-[a-f0-9]{32})"
+        r"(?![a-f0-9])",
+        re.ASCII | re.IGNORECASE
+    ),
+    confidence_base=0.75,
+    entropy_threshold=3.0,
+    context_keywords=[
+        "deepseek", "DEEPSEEK_API_KEY", "deepseek_key",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key at platform.deepseek.com under API Keys."
+        " Generate a new key and update your application."
+    ),
+    tags=["ai", "deepseek", "llm"],
+)
+
+
 register(
     OPENAI_API_KEY,
     ANTHROPIC_API_KEY,
@@ -224,4 +261,5 @@ register(
     HUGGINGFACE_TOKEN,
     REPLICATE_API_TOKEN,
     GROQ_API_KEY,
+    DEEPSEEK_API_KEY,
 )

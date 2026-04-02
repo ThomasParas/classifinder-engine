@@ -370,6 +370,70 @@ RUBYGEMS_TOKEN = SecretPattern(
 )
 
 
+# ===================================================
+# AIRTABLE
+# ===================================================
+
+AIRTABLE_API_KEY = SecretPattern(
+    id="airtable_api_key",
+    name="Airtable Personal Access Token",
+    description=(
+        "Airtable personal access token with pat prefix,"
+        " 14 alphanumeric chars, a dot, and 64 hex chars."
+        " Highly distinctive structure."
+    ),
+    provider="airtable",
+    severity="high",
+    regex=re.compile(
+        r"(?P<secret>pat[A-Za-z0-9]{14}\.[a-f0-9]{64})"
+        r"(?![a-f0-9])",
+        re.ASCII
+    ),
+    confidence_base=0.95,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "airtable", "AIRTABLE_API_KEY", "airtable_token",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this token at airtable.com/account under Personal Access Tokens."
+    ),
+    tags=["saas", "airtable"],
+)
+
+
+# ===================================================
+# NUGET
+# ===================================================
+
+NUGET_API_KEY = SecretPattern(
+    id="nuget_api_key",
+    name="NuGet API Key",
+    description=(
+        "NuGet package registry API key with oy2 prefix."
+        " Used to publish and manage .NET packages."
+    ),
+    provider="nuget",
+    severity="critical",
+    regex=re.compile(
+        r"(?P<secret>oy2[a-z0-9]{43})"
+        r"(?![a-z0-9])",
+        re.ASCII
+    ),
+    confidence_base=0.85,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "nuget", "NUGET_API_KEY", "nuget_token", "dotnet",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key at nuget.org under Account Settings > API Keys."
+        " An attacker can publish malicious .NET packages."
+    ),
+    tags=["vcs", "nuget", "registry"],
+)
+
+
 register(
     GITHUB_PAT_CLASSIC,
     GITHUB_PAT_FINE_GRAINED,
@@ -383,4 +447,6 @@ register(
     NPM_TOKEN,
     PYPI_TOKEN,
     RUBYGEMS_TOKEN,
+    AIRTABLE_API_KEY,
+    NUGET_API_KEY,
 )

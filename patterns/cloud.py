@@ -518,6 +518,96 @@ ALIBABA_ACCESS_KEY = SecretPattern(
 )
 
 
+# ===================================================
+# VERCEL
+# ===================================================
+
+VERCEL_ACCESS_TOKEN = SecretPattern(
+    id="vercel_access_token",
+    name="Vercel OAuth Access Token",
+    description=(
+        "Vercel OAuth access token with vca_ prefix."
+        " Grants access to Vercel deployments and project management."
+    ),
+    provider="vercel",
+    severity="critical",
+    regex=re.compile(
+        r"(?P<secret>vca_[A-Za-z0-9]{50,70})"
+        r"(?![A-Za-z0-9])",
+        re.ASCII
+    ),
+    confidence_base=0.95,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "vercel", "VERCEL_TOKEN", "vercel_token",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this token in the Vercel dashboard under Account Settings > Tokens."
+    ),
+    tags=["cloud", "vercel", "deploy"],
+)
+
+
+VERCEL_REFRESH_TOKEN = SecretPattern(
+    id="vercel_refresh_token",
+    name="Vercel OAuth Refresh Token",
+    description=(
+        "Vercel OAuth refresh token with vcr_ prefix."
+        " Can be exchanged for new access tokens."
+    ),
+    provider="vercel",
+    severity="critical",
+    regex=re.compile(
+        r"(?P<secret>vcr_[A-Za-z0-9]{50,70})"
+        r"(?![A-Za-z0-9])",
+        re.ASCII
+    ),
+    confidence_base=0.95,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "vercel", "VERCEL_REFRESH_TOKEN", "refresh",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this token in the Vercel dashboard."
+        " Refresh tokens allow persistent access — treat as critical."
+    ),
+    tags=["cloud", "vercel", "oauth"],
+)
+
+
+# ===================================================
+# NETLIFY
+# ===================================================
+
+NETLIFY_TOKEN = SecretPattern(
+    id="netlify_token",
+    name="Netlify Personal Access Token",
+    description=(
+        "Netlify personal access token with nfp_ prefix."
+        " Grants access to Netlify sites, deploys, and account management."
+    ),
+    provider="netlify",
+    severity="critical",
+    regex=re.compile(
+        r"(?P<secret>nfp_[A-Za-z0-9_]{36})"
+        r"(?![A-Za-z0-9_])",
+        re.ASCII
+    ),
+    confidence_base=0.95,
+    entropy_threshold=0.0,
+    context_keywords=[
+        "netlify", "NETLIFY_AUTH_TOKEN", "netlify_token",
+    ],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this token at app.netlify.com under User Settings > Applications."
+    ),
+    tags=["cloud", "netlify", "deploy"],
+)
+
+
 # Register all cloud patterns
 register(
     AWS_ACCESS_KEY,
@@ -535,4 +625,7 @@ register(
     PULUMI_ACCESS_TOKEN,
     FLY_API_TOKEN,
     ALIBABA_ACCESS_KEY,
+    VERCEL_ACCESS_TOKEN,
+    VERCEL_REFRESH_TOKEN,
+    NETLIFY_TOKEN,
 )
