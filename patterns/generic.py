@@ -1,5 +1,5 @@
 """
-SecretSweep — Generic & Auth Token Patterns
+ClassiFinder — Generic & Auth Token Patterns
 
 Catch-all patterns for JWT tokens, Bearer auth headers, generic API keys
 in .env files, and high-entropy strings that look like secrets but don't
@@ -36,19 +36,24 @@ JWT_TOKEN = SecretPattern(
     severity="high",
     regex=re.compile(
         r"(?P<secret>"
-        r"eyJ[A-Za-z0-9_-]{10,500}"       # header (base64url)
+        r"eyJ[A-Za-z0-9_-]{10,500}"  # header (base64url)
         r"\."
-        r"[A-Za-z0-9_-]{10,1000}"          # payload (base64url)
+        r"[A-Za-z0-9_-]{10,1000}"  # payload (base64url)
         r"\."
-        r"[A-Za-z0-9_-]{10,500}"           # signature (base64url)
+        r"[A-Za-z0-9_-]{10,500}"  # signature (base64url)
         r")"
         r"(?![A-Za-z0-9_\-.])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.90,
     entropy_threshold=0.0,  # structural match
     context_keywords=[
-        "jwt", "token", "bearer", "authorization", "auth", "session",
+        "jwt",
+        "token",
+        "bearer",
+        "authorization",
+        "auth",
+        "session",
     ],
     known_test_values={
         # Standard JWT example from jwt.io
@@ -85,12 +90,16 @@ BEARER_TOKEN = SecretPattern(
         r"Bearer\s+"
         r"(?P<secret>[A-Za-z0-9_\-.]{20,500})"
         r"[\"']?",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.88,
     entropy_threshold=2.5,
     context_keywords=[
-        "authorization", "bearer", "header", "auth", "token",
+        "authorization",
+        "bearer",
+        "header",
+        "auth",
+        "token",
     ],
     known_test_values=set(),
     recommendation=(
@@ -108,10 +117,7 @@ BEARER_TOKEN = SecretPattern(
 BASIC_AUTH_HEADER = SecretPattern(
     id="basic_auth_header",
     name="Basic Auth Credentials in Header",
-    description=(
-        "Base64-encoded username:password in a Basic"
-        " authorization header."
-    ),
+    description=("Base64-encoded username:password in a Basic authorization header."),
     provider="generic",
     severity="high",
     regex=re.compile(
@@ -121,16 +127,20 @@ BASIC_AUTH_HEADER = SecretPattern(
         r"Basic\s+"
         r"(?P<secret>[A-Za-z0-9+/]{8,256}={0,2})"
         r"[\"']?",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.85,
     entropy_threshold=2.0,
     context_keywords=[
-        "authorization", "basic", "header", "auth", "credentials",
+        "authorization",
+        "basic",
+        "header",
+        "auth",
+        "credentials",
     ],
     known_test_values={
         "dXNlcjpwYXNzd29yZA==",  # base64("user:password")
-        "YWRtaW46YWRtaW4=",      # base64("admin:admin")
+        "YWRtaW46YWRtaW4=",  # base64("admin:admin")
     },
     recommendation=(
         "Rotate the credentials encoded in this Basic auth header."
@@ -164,12 +174,17 @@ GENERIC_API_KEY_ENV = SecretPattern(
         r"[\s]*[=][\s]*[\"']?"
         r"(?P<secret>[A-Za-z0-9_\-/+=.]{16,256})"  # min 16 chars to reduce noise
         r"[\"']?",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.65,  # generic -- many false positives possible
     entropy_threshold=3.0,  # must have reasonable entropy
     context_keywords=[
-        "api", "key", "secret", "token", "credential", "auth",
+        "api",
+        "key",
+        "secret",
+        "token",
+        "credential",
+        "auth",
     ],
     known_test_values={
         "your-api-key-here",
@@ -212,12 +227,17 @@ GENERIC_HIGH_ENTROPY = SecretPattern(
         r")"
         r"(?P<secret>[A-Za-z0-9_\-/+=]{32,256})"
         r"(?![A-Za-z0-9_\-/+=])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.45,  # very low -- entropy check does the heavy lifting
     entropy_threshold=4.0,  # must be high entropy to survive
     context_keywords=[
-        "key", "token", "secret", "password", "credential", "auth",
+        "key",
+        "token",
+        "secret",
+        "password",
+        "credential",
+        "auth",
     ],
     known_test_values={
         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",

@@ -34,7 +34,7 @@ OPENAI_API_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>sk-(?:proj-)?[a-zA-Z0-9]{32,})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.90,
     entropy_threshold=3.0,
@@ -59,16 +59,13 @@ OPENAI_API_KEY = SecretPattern(
 ANTHROPIC_API_KEY = SecretPattern(
     id="anthropic_api_key",
     name="Anthropic API Key",
-    description=(
-        "Anthropic API key starting with sk-ant- prefix."
-        " Grants access to Claude models."
-    ),
+    description=("Anthropic API key starting with sk-ant- prefix. Grants access to Claude models."),
     provider="anthropic",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>sk-ant-[a-zA-Z0-9\-_]{32,})"
         r"(?![a-zA-Z0-9\-_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,  # sk-ant- prefix is highly distinctive
     entropy_threshold=0.0,
@@ -102,12 +99,16 @@ COHERE_API_KEY = SecretPattern(
         r")"
         r"(?P<secret>[a-zA-Z0-9]{40})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.75,  # no distinctive prefix, relies on context
     entropy_threshold=3.5,
     context_keywords=[
-        "cohere", "COHERE_API_KEY", "cohere_key", "embed", "rerank",
+        "cohere",
+        "COHERE_API_KEY",
+        "cohere_key",
+        "embed",
+        "rerank",
     ],
     known_test_values=set(),
     recommendation=(
@@ -134,13 +135,17 @@ HUGGINGFACE_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>hf_[A-Za-z0-9]{34,})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "huggingface", "hugging_face", "HF_TOKEN", "hf_token",
-        "HUGGINGFACE_TOKEN", "transformers",
+        "huggingface",
+        "hugging_face",
+        "HF_TOKEN",
+        "hf_token",
+        "HUGGINGFACE_TOKEN",
+        "transformers",
     ],
     known_test_values={
         "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
@@ -169,12 +174,14 @@ REPLICATE_API_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>r8_[A-Za-z0-9]{36,})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "replicate", "REPLICATE_API_TOKEN", "replicate_token",
+        "replicate",
+        "REPLICATE_API_TOKEN",
+        "replicate_token",
     ],
     known_test_values=set(),
     recommendation=(
@@ -193,25 +200,25 @@ GROQ_API_KEY = SecretPattern(
     id="groq_api_key",
     name="Groq API Key",
     description=(
-        "Groq API key with gsk_ prefix."
-        " Grants access to Groq's fast inference API for LLMs."
+        "Groq API key with gsk_ prefix. Grants access to Groq's fast inference API for LLMs."
     ),
     provider="groq",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>gsk_[A-Za-z0-9]{52,})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "groq", "GROQ_API_KEY", "groq_key",
+        "groq",
+        "GROQ_API_KEY",
+        "groq_key",
     ],
     known_test_values=set(),
     recommendation=(
-        "Revoke this key at console.groq.com/keys."
-        " Generate a new key and update your application."
+        "Revoke this key at console.groq.com/keys. Generate a new key and update your application."
     ),
     tags=["ai", "groq", "llm"],
 )
@@ -238,12 +245,14 @@ DEEPSEEK_API_KEY = SecretPattern(
         r")"
         r"(?P<secret>sk-[a-f0-9]{32})"
         r"(?![a-f0-9])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.75,
     entropy_threshold=3.0,
     context_keywords=[
-        "deepseek", "DEEPSEEK_API_KEY", "deepseek_key",
+        "deepseek",
+        "DEEPSEEK_API_KEY",
+        "deepseek_key",
     ],
     known_test_values=set(),
     recommendation=(

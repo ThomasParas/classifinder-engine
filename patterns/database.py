@@ -1,5 +1,5 @@
 """
-SecretSweep — Database & Infrastructure Patterns
+ClassiFinder — Database & Infrastructure Patterns
 
 Patterns for database connection strings, SSH/PEM private keys, and
 infrastructure credentials. These are extremely common in .env files,
@@ -35,19 +35,24 @@ POSTGRES_CONNECTION_STRING = SecretPattern(
     regex=re.compile(
         r"(?P<secret>"
         r"postgres(?:ql)?://"
-        r"[^:@\s]{1,64}"     # username
+        r"[^:@\s]{1,64}"  # username
         r":"
-        r"[^@\s]{1,128}"    # password (non-greedy up to @)
+        r"[^@\s]{1,128}"  # password (non-greedy up to @)
         r"@"
-        r"[^/\s]{1,256}"    # host:port
+        r"[^/\s]{1,256}"  # host:port
         r"(?:/[^\s\"']{0,128})?"  # optional /database
         r")",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.92,
     entropy_threshold=0.0,
     context_keywords=[
-        "database", "DATABASE_URL", "postgres", "postgresql", "db", "connection",
+        "database",
+        "DATABASE_URL",
+        "postgres",
+        "postgresql",
+        "db",
+        "connection",
     ],
     known_test_values={
         "postgres://user:password@localhost:5432/mydb",
@@ -72,27 +77,30 @@ MYSQL_CONNECTION_STRING = SecretPattern(
     regex=re.compile(
         r"(?P<secret>"
         r"mysql(?:\+pymysql|\+mysqlconnector)?://"
-        r"[^:@\s]{1,64}"     # username
+        r"[^:@\s]{1,64}"  # username
         r":"
-        r"[^@\s]{1,128}"    # password
+        r"[^@\s]{1,128}"  # password
         r"@"
-        r"[^/\s]{1,256}"    # host:port
+        r"[^/\s]{1,256}"  # host:port
         r"(?:/[^\s\"']{0,128})?"  # optional /database
         r")",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.92,
     entropy_threshold=0.0,
     context_keywords=[
-        "database", "DATABASE_URL", "mysql", "db", "connection",
+        "database",
+        "DATABASE_URL",
+        "mysql",
+        "db",
+        "connection",
     ],
     known_test_values={
         "mysql://root:password@localhost:3306/mydb",
         "mysql://user:pass@localhost/test",
     },
     recommendation=(
-        "Rotate the database password."
-        " Use a secrets manager for credential injection."
+        "Rotate the database password. Use a secrets manager for credential injection."
     ),
     tags=["database", "mysql"],
 )
@@ -110,18 +118,23 @@ MONGODB_CONNECTION_STRING = SecretPattern(
     regex=re.compile(
         r"(?P<secret>"
         r"mongodb(?:\+srv)?://"
-        r"[^:@\s]{1,64}"     # username
+        r"[^:@\s]{1,64}"  # username
         r":"
-        r"[^@\s]{1,128}"    # password
+        r"[^@\s]{1,128}"  # password
         r"@"
         r"[^\s\"']{1,512}"  # host(s) + options (MongoDB can have multiple hosts)
         r")",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.92,
     entropy_threshold=0.0,
     context_keywords=[
-        "mongo", "mongodb", "MONGODB_URI", "MONGO_URL", "database", "atlas",
+        "mongo",
+        "mongodb",
+        "MONGODB_URI",
+        "MONGO_URL",
+        "database",
+        "atlas",
     ],
     known_test_values={
         "mongodb://user:password@localhost:27017/mydb",
@@ -145,13 +158,13 @@ REDIS_CONNECTION_STRING = SecretPattern(
     regex=re.compile(
         r"(?P<secret>"
         r"redis(?:s)?://"
-        r"(?:[^:@\s]{0,64}:)?"   # optional username:
-        r"[^@\s]{1,128}"          # password
+        r"(?:[^:@\s]{0,64}:)?"  # optional username:
+        r"[^@\s]{1,128}"  # password
         r"@"
-        r"[^/\s]{1,256}"          # host:port
-        r"(?:/[0-9]{1,2})?"       # optional /db_number
+        r"[^/\s]{1,256}"  # host:port
+        r"(?:/[0-9]{1,2})?"  # optional /db_number
         r")",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.90,
     entropy_threshold=0.0,
@@ -160,10 +173,7 @@ REDIS_CONNECTION_STRING = SecretPattern(
         "redis://:password@localhost:6379/0",
         "redis://default:pass@localhost:6379",
     },
-    recommendation=(
-        "Rotate the Redis password."
-        " Use ACLs and TLS for production Redis instances."
-    ),
+    recommendation=("Rotate the Redis password. Use ACLs and TLS for production Redis instances."),
     tags=["database", "redis"],
 )
 
@@ -181,18 +191,22 @@ PASSWORD_IN_URL = SecretPattern(
     regex=re.compile(
         r"(?P<secret>"
         r"(?:https?|ftp|amqps?|kafka)://"
-        r"[^:@\s]{1,64}"     # username
+        r"[^:@\s]{1,64}"  # username
         r":"
-        r"[^@\s]{3,128}"    # password (min 3 chars to reduce false positives)
+        r"[^@\s]{3,128}"  # password (min 3 chars to reduce false positives)
         r"@"
-        r"[^/\s]{1,256}"    # host
+        r"[^/\s]{1,256}"  # host
         r")",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.80,
     entropy_threshold=2.0,  # filter out trivially simple passwords like "x"
     context_keywords=[
-        "url", "connection", "endpoint", "password", "credential",
+        "url",
+        "connection",
+        "endpoint",
+        "password",
+        "credential",
     ],
     known_test_values={
         "https://user:password@example.com",
@@ -228,7 +242,7 @@ ENV_DATABASE_PASSWORD = SecretPattern(
         r"[\s]*[=][\s]*[\"']?"
         r"(?P<secret>[^\s\"'#]{3,128})"  # min 3 chars, stop at whitespace/quotes/comments
         r"[\"']?",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.88,
     entropy_threshold=1.5,  # catch even simple passwords since context is strong
@@ -272,7 +286,7 @@ SSH_PRIVATE_KEY = SecretPattern(
         r"(?:RSA\s|EC\s|DSA\s|OPENSSH\s|ENCRYPTED\s)?"
         r"PRIVATE\sKEY-----"
         r")",
-        re.DOTALL
+        re.DOTALL,
     ),
     confidence_base=0.98,
     entropy_threshold=0.0,  # structural match, no entropy check needed
@@ -309,13 +323,16 @@ SUPABASE_SERVICE_KEY = SecretPattern(
         r")"
         r"(?P<secret>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9_-]{20,500}\.[A-Za-z0-9_-]{20,500})"
         r"(?![A-Za-z0-9_\-.])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.92,
     entropy_threshold=0.0,
     context_keywords=[
-        "supabase", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_KEY",
-        "supabase_url", "service_role",
+        "supabase",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_KEY",
+        "supabase_url",
+        "service_role",
     ],
     known_test_values=set(),
     recommendation=(

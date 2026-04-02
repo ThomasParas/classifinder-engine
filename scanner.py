@@ -1,5 +1,5 @@
 """
-SecretSweep — Core Scanner Engine
+ClassiFinder — Core Scanner Engine
 
 Pure function: text in -> findings out. No I/O, no side effects, no state.
 
@@ -137,18 +137,14 @@ def scan(
             except IndexError:
                 secret_value = match.group(0)
 
-            span_start = (
-                match.start("secret") if "secret" in match.groupdict() else match.start()
-            )
+            span_start = match.start("secret") if "secret" in match.groupdict() else match.start()
             span_end = match.end("secret") if "secret" in match.groupdict() else match.end()
 
             # -- Confidence calculation --
             confidence = pattern.confidence_base
 
             # Context boost
-            confidence += _context_boost(
-                text, span_start, span_end, pattern.context_keywords
-            )
+            confidence += _context_boost(text, span_start, span_end, pattern.context_keywords)
 
             # Entropy penalty (generic patterns only)
             is_test = False
@@ -186,9 +182,7 @@ def scan(
                 value_preview=_mask_value(secret_value),
                 span_start=span_start,
                 span_end=span_end,
-                context=(
-                    _extract_context(text, span_start, span_end) if include_context else None
-                ),
+                context=(_extract_context(text, span_start, span_end) if include_context else None),
                 is_likely_test_value=is_test,
                 recommendation=pattern.recommendation,
                 matched_pattern=f"{pattern.id}_v1",

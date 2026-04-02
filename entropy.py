@@ -1,5 +1,5 @@
 """
-SecretSweep — Shannon Entropy Calculator
+ClassiFinder — Shannon Entropy Calculator
 
 Calculates Shannon entropy of a string to help distinguish real secrets
 (high entropy, random-looking) from false positives (low entropy,

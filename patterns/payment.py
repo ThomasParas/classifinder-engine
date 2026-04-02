@@ -1,5 +1,5 @@
 """
-SecretSweep — Payment Provider Patterns
+ClassiFinder — Payment Provider Patterns
 
 Patterns for Stripe, PayPal, and Square credentials.
 Payment keys are critical severity -- a leaked Stripe live key gives direct
@@ -35,12 +35,15 @@ STRIPE_LIVE_SECRET_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>sk_live_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.99,  # prefix is unique to Stripe
     entropy_threshold=0.0,
     context_keywords=[
-        "stripe", "secret_key", "STRIPE_SECRET_KEY", "payment",
+        "stripe",
+        "secret_key",
+        "STRIPE_SECRET_KEY",
+        "payment",
     ],
     known_test_values=set(),  # sk_live_ keys are never test values by definition
     recommendation=(
@@ -64,12 +67,15 @@ STRIPE_TEST_SECRET_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>sk_test_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.99,
     entropy_threshold=0.0,
     context_keywords=[
-        "stripe", "secret_key", "test", "STRIPE_SECRET_KEY",
+        "stripe",
+        "secret_key",
+        "test",
+        "STRIPE_SECRET_KEY",
     ],
     known_test_values={
         "sk_test_4eC39HqLyjWDarjtT1zdp7dc",  # from Stripe docs
@@ -96,12 +102,14 @@ STRIPE_LIVE_PUBLISHABLE_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>pk_live_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.99,
     entropy_threshold=0.0,
     context_keywords=[
-        "stripe", "publishable", "STRIPE_PUBLISHABLE_KEY",
+        "stripe",
+        "publishable",
+        "STRIPE_PUBLISHABLE_KEY",
     ],
     known_test_values=set(),
     recommendation=(
@@ -117,21 +125,22 @@ STRIPE_LIVE_PUBLISHABLE_KEY = SecretPattern(
 STRIPE_WEBHOOK_SECRET = SecretPattern(
     id="stripe_webhook_secret",
     name="Stripe Webhook Signing Secret",
-    description=(
-        "Stripe webhook endpoint signing secret,"
-        " used to verify webhook payloads."
-    ),
+    description=("Stripe webhook endpoint signing secret, used to verify webhook payloads."),
     provider="stripe",
     severity="high",
     regex=re.compile(
         r"(?P<secret>whsec_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.99,
     entropy_threshold=0.0,
     context_keywords=[
-        "stripe", "webhook", "signing", "whsec", "endpoint",
+        "stripe",
+        "webhook",
+        "signing",
+        "whsec",
+        "endpoint",
     ],
     known_test_values=set(),
     recommendation=(
@@ -156,7 +165,7 @@ STRIPE_RESTRICTED_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>rk_live_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.99,
     entropy_threshold=0.0,
@@ -177,10 +186,7 @@ STRIPE_RESTRICTED_KEY = SecretPattern(
 PAYPAL_CLIENT_SECRET = SecretPattern(
     id="paypal_client_secret",
     name="PayPal Client Secret",
-    description=(
-        "PayPal REST API client secret."
-        " Used with client ID for OAuth authentication."
-    ),
+    description=("PayPal REST API client secret. Used with client ID for OAuth authentication."),
     provider="paypal",
     severity="critical",
     regex=re.compile(
@@ -190,13 +196,17 @@ PAYPAL_CLIENT_SECRET = SecretPattern(
         r")"
         r"(?P<secret>E[A-Za-z0-9\-]{50,80})"  # PayPal secrets typically start with E
         r"(?![A-Za-z0-9\-])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.75,  # format less distinctive, relies on context
     entropy_threshold=3.5,
     context_keywords=[
-        "paypal", "client_secret", "client_id",
-        "PAYPAL_CLIENT_ID", "sandbox", "payment",
+        "paypal",
+        "client_secret",
+        "client_id",
+        "PAYPAL_CLIENT_ID",
+        "sandbox",
+        "payment",
     ],
     known_test_values=set(),
     recommendation=(
@@ -224,18 +234,18 @@ SQUARE_ACCESS_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>EAA[a-zA-Z0-9\-_]{40,100})"
         r"(?![a-zA-Z0-9\-_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.85,
     entropy_threshold=3.0,
     context_keywords=[
-        "square", "access_token", "SQUARE_ACCESS_TOKEN", "squareup",
+        "square",
+        "access_token",
+        "SQUARE_ACCESS_TOKEN",
+        "squareup",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke and regenerate this token"
-        " in the Square Developer Dashboard."
-    ),
+    recommendation=("Revoke and regenerate this token in the Square Developer Dashboard."),
     tags=["payment", "square"],
 )
 
@@ -289,17 +299,24 @@ CREDIT_CARD_NUMBER = SecretPattern(
     confidence_base=0.90,
     entropy_threshold=0.0,  # Luhn check handles validation instead of entropy
     context_keywords=[
-        "card", "credit", "cc", "payment", "card_number",
-        "pan", "visa", "mastercard", "amex",
+        "card",
+        "credit",
+        "cc",
+        "payment",
+        "card_number",
+        "pan",
+        "visa",
+        "mastercard",
+        "amex",
     ],
     known_test_values={
-        "4111111111111111",    # Visa test
+        "4111111111111111",  # Visa test
         "4111 1111 1111 1111",
         "4111-1111-1111-1111",
-        "5500000000000004",    # Mastercard test
-        "340000000000009",     # Amex test
-        "6011000000000004",    # Discover test
-        "4242424242424242",    # Stripe test card
+        "5500000000000004",  # Mastercard test
+        "340000000000009",  # Amex test
+        "6011000000000004",  # Discover test
+        "4242424242424242",  # Stripe test card
     },
     recommendation=(
         "This card number should be removed from code, logs,"
@@ -326,12 +343,15 @@ SHOPIFY_ACCESS_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>shpat_[a-fA-F0-9]{32})"
         r"(?![a-fA-F0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "shopify", "SHOPIFY_ACCESS_TOKEN", "shopify_token", "shpat",
+        "shopify",
+        "SHOPIFY_ACCESS_TOKEN",
+        "shopify_token",
+        "shpat",
     ],
     known_test_values=set(),
     recommendation=(
@@ -354,18 +374,17 @@ SHOPIFY_CUSTOM_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>shpca_[a-fA-F0-9]{32})"
         r"(?![a-fA-F0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "shopify", "SHOPIFY_CUSTOM_TOKEN", "shpca",
+        "shopify",
+        "SHOPIFY_CUSTOM_TOKEN",
+        "shpca",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in the Shopify store admin"
-        " under Apps > Develop apps."
-    ),
+    recommendation=("Revoke this token in the Shopify store admin under Apps > Develop apps."),
     tags=["payment", "shopify", "ecommerce"],
 )
 
@@ -382,17 +401,18 @@ SHOPIFY_PRIVATE_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>shppa_[a-fA-F0-9]{32})"
         r"(?![a-fA-F0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "shopify", "SHOPIFY_PRIVATE_TOKEN", "shppa",
+        "shopify",
+        "SHOPIFY_PRIVATE_TOKEN",
+        "shppa",
     ],
     known_test_values=set(),
     recommendation=(
-        "Shopify deprecated private apps. Migrate to custom apps"
-        " and revoke this token."
+        "Shopify deprecated private apps. Migrate to custom apps and revoke this token."
     ),
     tags=["payment", "shopify", "ecommerce"],
 )
@@ -419,12 +439,17 @@ ETHEREUM_PRIVATE_KEY = SecretPattern(
         r")"
         r"(?P<secret>0x[a-fA-F0-9]{64})"
         r"(?![a-fA-F0-9])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.80,
     entropy_threshold=3.5,
     context_keywords=[
-        "ethereum", "eth", "wallet", "ETH_PRIVATE_KEY", "web3", "metamask",
+        "ethereum",
+        "eth",
+        "wallet",
+        "ETH_PRIVATE_KEY",
+        "web3",
+        "metamask",
     ],
     known_test_values={
         "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",  # Hardhat #0
@@ -459,12 +484,17 @@ BITCOIN_WIF_KEY = SecretPattern(
         r")"
         r"(?P<secret>[5KL][1-9A-HJ-NP-Za-km-z]{50,51})"
         r"(?![1-9A-HJ-NP-Za-km-z])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.80,
     entropy_threshold=3.5,
     context_keywords=[
-        "bitcoin", "btc", "wallet", "wif", "BTC_PRIVATE_KEY", "private_key",
+        "bitcoin",
+        "btc",
+        "wallet",
+        "wif",
+        "BTC_PRIVATE_KEY",
+        "private_key",
     ],
     known_test_values=set(),
     recommendation=(

@@ -1,5 +1,5 @@
 """
-SecretSweep — Version Control & CI/CD Patterns
+ClassiFinder — Version Control & CI/CD Patterns
 
 Patterns for GitHub, GitLab, Bitbucket, CircleCI, and Jenkins credentials.
 These are among the most commonly leaked secret types -- GitHub tokens alone
@@ -34,7 +34,7 @@ GITHUB_PAT_CLASSIC = SecretPattern(
     regex=re.compile(
         r"(?P<secret>ghp_[A-Za-z0-9]{30,40})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
@@ -62,12 +62,16 @@ GITHUB_PAT_FINE_GRAINED = SecretPattern(
     regex=re.compile(
         r"(?P<secret>github_pat_[A-Za-z0-9_]{82})"
         r"(?![A-Za-z0-9_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "github", "token", "GITHUB_TOKEN", "fine-grained", "pat",
+        "github",
+        "token",
+        "GITHUB_TOKEN",
+        "fine-grained",
+        "pat",
     ],
     known_test_values=set(),
     recommendation=(
@@ -83,15 +87,13 @@ GITHUB_PAT_FINE_GRAINED = SecretPattern(
 GITHUB_OAUTH_SECRET = SecretPattern(
     id="github_oauth_secret",
     name="GitHub OAuth App Client Secret",
-    description=(
-        "GitHub OAuth application client secret with gho_ prefix."
-    ),
+    description=("GitHub OAuth application client secret with gho_ prefix."),
     provider="github",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>gho_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
@@ -117,7 +119,7 @@ GITHUB_APP_INSTALLATION_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>ghs_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
@@ -144,7 +146,7 @@ GITHUB_USER_TO_SERVER_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>ghu_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
@@ -171,18 +173,19 @@ GITLAB_PAT = SecretPattern(
     regex=re.compile(
         r"(?P<secret>glpat-[A-Za-z0-9\-_]{20,})"
         r"(?![A-Za-z0-9\-_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "gitlab", "token", "GITLAB_TOKEN", "pat", "private_token",
+        "gitlab",
+        "token",
+        "GITLAB_TOKEN",
+        "pat",
+        "private_token",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in GitLab"
-        " under User Settings > Access Tokens."
-    ),
+    recommendation=("Revoke this token in GitLab under User Settings > Access Tokens."),
     tags=["vcs", "gitlab", "auth"],
 )
 
@@ -196,7 +199,7 @@ GITLAB_PIPELINE_TRIGGER = SecretPattern(
     regex=re.compile(
         r"(?P<secret>glptt-[A-Za-z0-9\-_]{20,})"
         r"(?![A-Za-z0-9\-_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
@@ -230,17 +233,18 @@ BITBUCKET_APP_PASSWORD = SecretPattern(
         r")"
         r"(?P<secret>[A-Za-z0-9]{20,40})"
         r"(?![A-Za-z0-9])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.75,  # no distinctive prefix, context-dependent
     entropy_threshold=3.0,
     context_keywords=[
-        "bitbucket", "app_password", "BITBUCKET_APP_PASSWORD",
+        "bitbucket",
+        "app_password",
+        "BITBUCKET_APP_PASSWORD",
     ],
     known_test_values=set(),
     recommendation=(
-        "Delete this app password in Bitbucket"
-        " under Personal Settings > App Passwords."
+        "Delete this app password in Bitbucket under Personal Settings > App Passwords."
     ),
     tags=["vcs", "bitbucket", "auth"],
 )
@@ -253,10 +257,7 @@ BITBUCKET_APP_PASSWORD = SecretPattern(
 CIRCLECI_TOKEN = SecretPattern(
     id="circleci_token",
     name="CircleCI API Token",
-    description=(
-        "CircleCI personal or project API token."
-        " Typically a 40-character hex string."
-    ),
+    description=("CircleCI personal or project API token. Typically a 40-character hex string."),
     provider="circleci",
     severity="high",
     regex=re.compile(
@@ -266,18 +267,19 @@ CIRCLECI_TOKEN = SecretPattern(
         r")"
         r"(?P<secret>[a-f0-9]{40})"
         r"(?![a-f0-9])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.80,
     entropy_threshold=3.0,
     context_keywords=[
-        "circleci", "circle", "ci", "token", "CIRCLE_TOKEN",
+        "circleci",
+        "circle",
+        "ci",
+        "token",
+        "CIRCLE_TOKEN",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in CircleCI"
-        " under User Settings > Personal API Tokens."
-    ),
+    recommendation=("Revoke this token in CircleCI under User Settings > Personal API Tokens."),
     tags=["ci", "circleci"],
 )
 
@@ -298,12 +300,16 @@ NPM_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>npm_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "npm", "NPM_TOKEN", "npmrc", "registry", "node",
+        "npm",
+        "NPM_TOKEN",
+        "npmrc",
+        "registry",
+        "node",
     ],
     known_test_values=set(),
     recommendation=(
@@ -326,12 +332,16 @@ PYPI_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>pypi-AgEIcHlwaS5vcmc[A-Za-z0-9\-_]{50,})"
         r"(?![A-Za-z0-9\-_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.99,
     entropy_threshold=0.0,
     context_keywords=[
-        "pypi", "PYPI_TOKEN", "twine", "upload", "pip",
+        "pypi",
+        "PYPI_TOKEN",
+        "twine",
+        "upload",
+        "pip",
     ],
     known_test_values=set(),
     recommendation=(
@@ -346,20 +356,22 @@ RUBYGEMS_TOKEN = SecretPattern(
     id="rubygems_token",
     name="RubyGems API Key",
     description=(
-        "RubyGems API key with rubygems_ prefix."
-        " Grants access to publish and manage Ruby gems."
+        "RubyGems API key with rubygems_ prefix. Grants access to publish and manage Ruby gems."
     ),
     provider="rubygems",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>rubygems_[A-Za-z0-9]{48})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "rubygems", "RUBYGEMS_API_KEY", "gem", "gem_host_api_key",
+        "rubygems",
+        "RUBYGEMS_API_KEY",
+        "gem",
+        "gem_host_api_key",
     ],
     known_test_values=set(),
     recommendation=(
@@ -387,17 +399,17 @@ AIRTABLE_API_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>pat[A-Za-z0-9]{14}\.[a-f0-9]{64})"
         r"(?![a-f0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,
     context_keywords=[
-        "airtable", "AIRTABLE_API_KEY", "airtable_token",
+        "airtable",
+        "AIRTABLE_API_KEY",
+        "airtable_token",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token at airtable.com/account under Personal Access Tokens."
-    ),
+    recommendation=("Revoke this token at airtable.com/account under Personal Access Tokens."),
     tags=["saas", "airtable"],
 )
 
@@ -410,20 +422,22 @@ NUGET_API_KEY = SecretPattern(
     id="nuget_api_key",
     name="NuGet API Key",
     description=(
-        "NuGet package registry API key with oy2 prefix."
-        " Used to publish and manage .NET packages."
+        "NuGet package registry API key with oy2 prefix. Used to publish and manage .NET packages."
     ),
     provider="nuget",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>oy2[a-z0-9]{43})"
         r"(?![a-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.85,
     entropy_threshold=0.0,
     context_keywords=[
-        "nuget", "NUGET_API_KEY", "nuget_token", "dotnet",
+        "nuget",
+        "NUGET_API_KEY",
+        "nuget_token",
+        "dotnet",
     ],
     known_test_values=set(),
     recommendation=(

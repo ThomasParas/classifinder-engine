@@ -1,6 +1,27 @@
+[project]
+name = "classifinder-engine"
+version = "0.1.0"
+description = "Standalone secret detection engine — 88 patterns, zero dependencies"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "ruff>=0.8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+src = ["."]
 
 [tool.ruff.lint]
 select = [
@@ -12,7 +33,15 @@ select = [
     "B",    # flake8-bugbear
     "SIM",  # flake8-simplify
     "RUF",  # Ruff-specific rules
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "TCH",  # type-checking imports
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["patterns", "scanner", "redactor", "entropy"]

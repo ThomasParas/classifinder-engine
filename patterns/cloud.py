@@ -1,5 +1,5 @@
 """
-SecretSweep — Cloud Provider Patterns
+ClassiFinder — Cloud Provider Patterns
 
 Patterns for AWS, GCP, Azure, DigitalOcean, Heroku, and Cloudflare credentials.
 These are the highest-severity detections -- leaked cloud keys can result in
@@ -27,20 +27,24 @@ AWS_ACCESS_KEY = SecretPattern(
     id="aws_access_key",
     name="AWS Access Key ID",
     description=(
-        "AWS IAM access key, 20 characters starting with AKIA (permanent)"
-        " or ASIA (temporary STS)."
+        "AWS IAM access key, 20 characters starting with AKIA (permanent) or ASIA (temporary STS)."
     ),
     provider="aws",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>(?:AKIA|ASIA)[0-9A-Z]{16,20})"
         r"(?![0-9A-Za-z])",  # negative lookahead: must not be followed by more alnum
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,  # prefix-anchored, no entropy check needed
     context_keywords=[
-        "aws", "access_key", "access-key", "AWS_ACCESS_KEY_ID", "credential", "iam",
+        "aws",
+        "access_key",
+        "access-key",
+        "AWS_ACCESS_KEY_ID",
+        "credential",
+        "iam",
     ],
     known_test_values={
         "AKIAIOSFODNN7EXAMPLE",
@@ -73,7 +77,7 @@ AWS_SECRET_KEY = SecretPattern(
         r")"
         r"(?P<secret>[A-Za-z0-9/+=]{40})"
         r"(?![A-Za-z0-9/+=])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.90,
     entropy_threshold=3.5,  # real keys have high entropy; filter out padding strings
@@ -97,20 +101,23 @@ AWS_SECRET_KEY = SecretPattern(
 GCP_API_KEY = SecretPattern(
     id="gcp_api_key",
     name="GCP API Key",
-    description=(
-        "Google Cloud Platform API key, 39 characters starting with AIza."
-    ),
+    description=("Google Cloud Platform API key, 39 characters starting with AIza."),
     provider="gcp",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>AIza[0-9A-Za-z\-_]{35})"
         r"(?![0-9A-Za-z\-_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,
     context_keywords=[
-        "google", "gcp", "api_key", "api-key", "GOOGLE_API_KEY", "firebase",
+        "google",
+        "gcp",
+        "api_key",
+        "api-key",
+        "GOOGLE_API_KEY",
+        "firebase",
     ],
     known_test_values={
         "AIzaSyA-FAKE-KEY-FOR-TESTING-1234567",
@@ -140,12 +147,16 @@ GCP_SERVICE_ACCOUNT_KEY = SecretPattern(
         r"[^\"]{50,2048}"  # capture enough of the key to confirm, but cap it
         r"-----END\s(?:RSA\s)?PRIVATE\sKEY-----\\n\""
         r")",
-        re.DOTALL
+        re.DOTALL,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "service_account", "client_email", "project_id", "type", "google",
+        "service_account",
+        "client_email",
+        "project_id",
+        "type",
+        "google",
     ],
     known_test_values=set(),
     recommendation=(
@@ -164,10 +175,7 @@ GCP_SERVICE_ACCOUNT_KEY = SecretPattern(
 AZURE_STORAGE_KEY = SecretPattern(
     id="azure_storage_key",
     name="Azure Storage Account Key",
-    description=(
-        "Azure Storage account access key, 88-character base64 string"
-        " ending with ==."
-    ),
+    description=("Azure Storage account access key, 88-character base64 string ending with ==."),
     provider="azure",
     severity="critical",
     regex=re.compile(
@@ -176,17 +184,20 @@ AZURE_STORAGE_KEY = SecretPattern(
         r"[\s]*[=:\"'\s]+"
         r")"
         r"(?P<secret>[A-Za-z0-9+/]{86}==)",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.90,
     entropy_threshold=4.0,
     context_keywords=[
-        "azure", "storage", "account_key", "AccountKey",
-        "blob", "DefaultEndpointsProtocol",
+        "azure",
+        "storage",
+        "account_key",
+        "AccountKey",
+        "blob",
+        "DefaultEndpointsProtocol",
     ],
     known_test_values={
-        "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq"
-        "/K1SZFPTOtr/KBHBeksoGMGw==",
+        "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==",
     },
     recommendation=(
         "Rotate this storage account key in the Azure Portal."
@@ -214,13 +225,17 @@ AZURE_AD_CLIENT_SECRET = SecretPattern(
         r")"
         r"(?P<secret>[A-Za-z0-9~_.]{34,44})"
         r"(?![A-Za-z0-9~_.])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.75,  # lower base -- format is less distinctive
     entropy_threshold=3.5,
     context_keywords=[
-        "azure", "client_secret", "tenant", "AZURE_TENANT_ID",
-        "AZURE_CLIENT_ID", "active_directory",
+        "azure",
+        "client_secret",
+        "tenant",
+        "AZURE_TENANT_ID",
+        "AZURE_CLIENT_ID",
+        "active_directory",
     ],
     known_test_values=set(),
     recommendation=(
@@ -239,24 +254,19 @@ AZURE_AD_CLIENT_SECRET = SecretPattern(
 DIGITALOCEAN_TOKEN = SecretPattern(
     id="digitalocean_token",
     name="DigitalOcean Personal Access Token",
-    description=(
-        "DigitalOcean API token with dop_v1_ prefix, 64 hex characters."
-    ),
+    description=("DigitalOcean API token with dop_v1_ prefix, 64 hex characters."),
     provider="digitalocean",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>dop_v1_[a-f0-9]{64})"
         r"(?![a-f0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=["digitalocean", "do_token", "DIGITALOCEAN_TOKEN"],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in the DigitalOcean control panel"
-        " under API > Tokens."
-    ),
+    recommendation=("Revoke this token in the DigitalOcean control panel under API > Tokens."),
     tags=["cloud", "digitalocean"],
 )
 
@@ -268,10 +278,7 @@ DIGITALOCEAN_TOKEN = SecretPattern(
 HEROKU_API_KEY = SecretPattern(
     id="heroku_api_key",
     name="Heroku API Key",
-    description=(
-        "Heroku API key, a UUID-format string"
-        " (36 chars including hyphens)."
-    ),
+    description=("Heroku API key, a UUID-format string (36 chars including hyphens)."),
     provider="heroku",
     severity="high",
     regex=re.compile(
@@ -280,15 +287,14 @@ HEROKU_API_KEY = SecretPattern(
         r"[\s]*[=:\"'\s]+"
         r")"
         r"(?P<secret>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.80,  # UUID format is common, context-dependent
     entropy_threshold=0.0,
     context_keywords=["heroku", "api_key", "HEROKU_API_KEY"],
     known_test_values=set(),
     recommendation=(
-        "Regenerate your Heroku API key via"
-        " `heroku authorizations:create` or the Heroku dashboard."
+        "Regenerate your Heroku API key via `heroku authorizations:create` or the Heroku dashboard."
     ),
     tags=["cloud", "heroku"],
 )
@@ -302,8 +308,7 @@ CLOUDFLARE_API_TOKEN = SecretPattern(
     id="cloudflare_api_token",
     name="Cloudflare API Token",
     description=(
-        "Cloudflare API token, 40-character alphanumeric string"
-        " with underscores and hyphens."
+        "Cloudflare API token, 40-character alphanumeric string with underscores and hyphens."
     ),
     provider="cloudflare",
     severity="critical",
@@ -314,16 +319,13 @@ CLOUDFLARE_API_TOKEN = SecretPattern(
         r")"
         r"(?P<secret>[A-Za-z0-9_\-]{40})"
         r"(?![A-Za-z0-9_\-])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.80,
     entropy_threshold=3.5,
     context_keywords=["cloudflare", "cf_", "api_token", "CF_API_TOKEN"],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in the Cloudflare dashboard"
-        " under My Profile > API Tokens."
-    ),
+    recommendation=("Revoke this token in the Cloudflare dashboard under My Profile > API Tokens."),
     tags=["cloud", "cloudflare"],
 )
 
@@ -336,24 +338,20 @@ DOPPLER_TOKEN = SecretPattern(
     id="doppler_token",
     name="Doppler Service Token",
     description=(
-        "Doppler service token with dp.pt. prefix."
-        " Grants access to secrets stored in Doppler."
+        "Doppler service token with dp.pt. prefix. Grants access to secrets stored in Doppler."
     ),
     provider="doppler",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>dp\.pt\.[A-Za-z0-9]{40,44})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=["doppler", "DOPPLER_TOKEN", "dp_token"],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in the Doppler dashboard"
-        " under Access > Service Tokens."
-    ),
+    recommendation=("Revoke this token in the Doppler dashboard under Access > Service Tokens."),
     tags=["cloud", "doppler", "secrets"],
 )
 
@@ -374,12 +372,16 @@ TERRAFORM_CLOUD_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9]{67})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "terraform", "TF_TOKEN", "TFE_TOKEN", "atlas", "terraform_cloud",
+        "terraform",
+        "TF_TOKEN",
+        "TFE_TOKEN",
+        "atlas",
+        "terraform_cloud",
     ],
     known_test_values=set(),
     recommendation=(
@@ -398,20 +400,22 @@ VAULT_TOKEN = SecretPattern(
     id="vault_token",
     name="HashiCorp Vault Token",
     description=(
-        "HashiCorp Vault service token with hvs. prefix."
-        " Grants access to secrets stored in Vault."
+        "HashiCorp Vault service token with hvs. prefix. Grants access to secrets stored in Vault."
     ),
     provider="vault",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>hvs\.[A-Za-z0-9]{24,})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "vault", "VAULT_TOKEN", "hashicorp", "hvs",
+        "vault",
+        "VAULT_TOKEN",
+        "hashicorp",
+        "hvs",
     ],
     known_test_values=set(),
     recommendation=(
@@ -438,12 +442,14 @@ PULUMI_ACCESS_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>pul-[a-f0-9]{40})"
         r"(?![a-f0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "pulumi", "PULUMI_ACCESS_TOKEN", "pulumi_token",
+        "pulumi",
+        "PULUMI_ACCESS_TOKEN",
+        "pulumi_token",
     ],
     known_test_values=set(),
     recommendation=(
@@ -470,12 +476,15 @@ FLY_API_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>fo1_[A-Za-z0-9]{39})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.97,
     entropy_threshold=0.0,
     context_keywords=[
-        "fly", "FLY_API_TOKEN", "fly_token", "flyctl",
+        "fly",
+        "FLY_API_TOKEN",
+        "fly_token",
+        "flyctl",
     ],
     known_test_values=set(),
     recommendation=(
@@ -502,17 +511,19 @@ ALIBABA_ACCESS_KEY = SecretPattern(
     regex=re.compile(
         r"(?P<secret>LTAI[A-Za-z0-9]{17,21})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,
     context_keywords=[
-        "alibaba", "aliyun", "ALIBABA_ACCESS_KEY", "alicloud",
+        "alibaba",
+        "aliyun",
+        "ALIBABA_ACCESS_KEY",
+        "alicloud",
     ],
     known_test_values=set(),
     recommendation=(
-        "Rotate this key in the Alibaba Cloud RAM console."
-        " Audit AccessKey usage via ActionTrail."
+        "Rotate this key in the Alibaba Cloud RAM console. Audit AccessKey usage via ActionTrail."
     ),
     tags=["cloud", "alibaba", "iam"],
 )
@@ -534,17 +545,17 @@ VERCEL_ACCESS_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>vca_[A-Za-z0-9]{50,70})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,
     context_keywords=[
-        "vercel", "VERCEL_TOKEN", "vercel_token",
+        "vercel",
+        "VERCEL_TOKEN",
+        "vercel_token",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token in the Vercel dashboard under Account Settings > Tokens."
-    ),
+    recommendation=("Revoke this token in the Vercel dashboard under Account Settings > Tokens."),
     tags=["cloud", "vercel", "deploy"],
 )
 
@@ -553,20 +564,21 @@ VERCEL_REFRESH_TOKEN = SecretPattern(
     id="vercel_refresh_token",
     name="Vercel OAuth Refresh Token",
     description=(
-        "Vercel OAuth refresh token with vcr_ prefix."
-        " Can be exchanged for new access tokens."
+        "Vercel OAuth refresh token with vcr_ prefix. Can be exchanged for new access tokens."
     ),
     provider="vercel",
     severity="critical",
     regex=re.compile(
         r"(?P<secret>vcr_[A-Za-z0-9]{50,70})"
         r"(?![A-Za-z0-9])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,
     context_keywords=[
-        "vercel", "VERCEL_REFRESH_TOKEN", "refresh",
+        "vercel",
+        "VERCEL_REFRESH_TOKEN",
+        "refresh",
     ],
     known_test_values=set(),
     recommendation=(
@@ -593,17 +605,17 @@ NETLIFY_TOKEN = SecretPattern(
     regex=re.compile(
         r"(?P<secret>nfp_[A-Za-z0-9_]{36})"
         r"(?![A-Za-z0-9_])",
-        re.ASCII
+        re.ASCII,
     ),
     confidence_base=0.95,
     entropy_threshold=0.0,
     context_keywords=[
-        "netlify", "NETLIFY_AUTH_TOKEN", "netlify_token",
+        "netlify",
+        "NETLIFY_AUTH_TOKEN",
+        "netlify_token",
     ],
     known_test_values=set(),
-    recommendation=(
-        "Revoke this token at app.netlify.com under User Settings > Applications."
-    ),
+    recommendation=("Revoke this token at app.netlify.com under User Settings > Applications."),
     tags=["cloud", "netlify", "deploy"],
 )
 
@@ -629,12 +641,16 @@ IBM_CLOUD_API_KEY = SecretPattern(
         r")"
         r"(?P<secret>[A-Za-z0-9_\-]{44})"
         r"(?![A-Za-z0-9_\-])",
-        re.ASCII | re.IGNORECASE
+        re.ASCII | re.IGNORECASE,
     ),
     confidence_base=0.75,
     entropy_threshold=3.5,
     context_keywords=[
-        "ibm", "IBM_API_KEY", "IBM_CLOUD_API_KEY", "ibm_cloud", "bluemix",
+        "ibm",
+        "IBM_API_KEY",
+        "IBM_CLOUD_API_KEY",
+        "ibm_cloud",
+        "bluemix",
     ],
     known_test_values=set(),
     recommendation=(

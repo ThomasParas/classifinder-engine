@@ -1,5 +1,5 @@
 """
-SecretSweep — Text Redactor
+ClassiFinder — Text Redactor
 
 Takes scanner findings and produces a sanitized version of the input text
 with all detected secrets replaced. Supports three redaction styles:
@@ -48,7 +48,7 @@ def redact(
     text: str,
     findings: list[Finding],
     style: str = "label",
-) -> tuple:
+) -> tuple[str, list[dict[str, str | int]]]:
     """
     Produce a redacted version of the input text.
 
@@ -83,10 +83,12 @@ def redact(
 
         redacted = redacted[:start] + replacement + redacted[end:]
 
-        redaction_map.append({
-            "finding_id": finding.id,
-            "redacted_as": replacement,
-        })
+        redaction_map.append(
+            {
+                "finding_id": finding.id,
+                "redacted_as": replacement,
+            }
+        )
 
     # Reverse the map so it's in text-order (we built it backwards)
     redaction_map.reverse()
