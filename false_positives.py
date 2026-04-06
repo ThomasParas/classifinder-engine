@@ -12,7 +12,6 @@ contain known false positive terms.
 from functools import lru_cache
 from pathlib import Path
 
-
 # Common junk strings that appear in example code, docs, and placeholder configs.
 # Checked via substring match against the lowercased raw value.
 DEFAULT_FALSE_POSITIVES: frozenset[str] = frozenset({

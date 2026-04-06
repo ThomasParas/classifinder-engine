@@ -12,7 +12,6 @@ encoded secrets without the complexity of recursive decoding.
 import base64
 import re
 
-
 # Match base64 strings of 20+ chars (real secrets are rarely shorter when encoded)
 _BASE64_RE = re.compile(r"[A-Za-z0-9+/\-_]{20,}={0,3}")
 

@@ -387,7 +387,10 @@ DEEPGRAM_API_KEY = SecretPattern(
 LANGFUSE_SECRET_KEY = SecretPattern(
     id="langfuse_secret_key",
     name="LangFuse Secret Key",
-    description="LangFuse secret key with sk-lf- prefix. Grants access to LangFuse LLM observability.",
+    description=(
+        "LangFuse secret key with sk-lf- prefix."
+        " Grants access to LangFuse LLM observability."
+    ),
     provider="langfuse",
     severity="high",
     regex=re.compile(

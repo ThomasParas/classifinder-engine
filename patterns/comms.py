@@ -812,7 +812,10 @@ MATTERMOST_TOKEN = SecretPattern(
     entropy_threshold=3.0,
     context_keywords=["mattermost", "MATTERMOST_TOKEN"],
     known_test_values=set(),
-    recommendation="Revoke this token in Mattermost under Account Settings > Security > Personal Access Tokens.",
+    recommendation=(
+        "Revoke this token in Mattermost under"
+        " Account Settings > Security > Personal Access Tokens."
+    ),
     tags=["comms", "mattermost"],
 )
 

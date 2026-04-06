@@ -203,7 +203,10 @@ def scan(
 
     # -- Scan decoded base64 segments for secrets --
     for decoded_text, orig_start, orig_end in decoded_segments:
-        decoded_findings = scan(decoded_text, types=types, min_confidence=min_confidence, include_context=False)
+        decoded_findings = scan(
+            decoded_text, types=types,
+            min_confidence=min_confidence, include_context=False,
+        )
         for df in decoded_findings:
             finding_counter += 1
             raw_findings.append(Finding(
