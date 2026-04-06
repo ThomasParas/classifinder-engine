@@ -247,7 +247,7 @@ DEEPSEEK_API_KEY = SecretPattern(
         r"(?![a-f0-9])",
         re.ASCII | re.IGNORECASE,
     ),
-    confidence_base=0.75,
+    confidence_base=0.92,
     entropy_threshold=3.0,
     context_keywords=[
         "deepseek",
