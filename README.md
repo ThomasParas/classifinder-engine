@@ -69,3 +69,5 @@ Want a ready-to-use CLI? [cfsniff](https://github.com/ThomasParas/cfsniff) wraps
 ## License
 
 MIT
+
+See [ATTRIBUTION.md](./ATTRIBUTION.md) for third-party notices and pattern provenance.

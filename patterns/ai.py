@@ -62,8 +62,11 @@ ANTHROPIC_API_KEY = SecretPattern(
     description=("Anthropic API key starting with sk-ant- prefix. Grants access to Claude models."),
     provider="anthropic",
     severity="critical",
+    # Format per Anthropic Console (sk-ant-api<NN>- prefix is vendor-published).
+    # Independently authored — broader than Betterleaks's stricter
+    # `sk-ant-api03-...{93}AA` form to catch legacy/variant key shapes.
     regex=re.compile(
-        r"(?P<secret>sk-ant-[a-zA-Z0-9\-_]{32,})"
+        r"(?P<secret>sk-ant-api[0-9]{2}-[a-zA-Z0-9\-_]{32,})"
         r"(?![a-zA-Z0-9\-_])",
         re.ASCII,
     ),
@@ -438,9 +441,178 @@ MISTRAL_API_KEY = SecretPattern(
 )
 
 
+# ===================================================
+# ANTHROPIC ADMIN (org-level admin keys, distinct from sk-ant-api*)
+# ===================================================
+
+ANTHROPIC_ADMIN_API_KEY = SecretPattern(
+    id="anthropic_admin_api_key",
+    name="Anthropic Admin API Key",
+    description=(
+        "Anthropic Admin API key with sk-ant-admin01- prefix."
+        " Distinct from sk-ant-api* user keys -- grants org-level"
+        " administrative access to billing, members, and workspace config."
+    ),
+    provider="anthropic",
+    severity="critical",
+    # Pattern attribution: betterleaks v1.0.0 config/betterleaks.toml:197 (MIT)
+    #   https://github.com/betterleaks/betterleaks
+    # See ATTRIBUTION.md for full license notice.
+    regex=re.compile(
+        r"(?P<secret>sk-ant-admin01-[a-zA-Z0-9_\-]{93}AA)"
+        r"(?![a-zA-Z0-9_\-])",
+        re.ASCII,
+    ),
+    confidence_base=0.97,
+    entropy_threshold=0.0,
+    context_keywords=["sk-ant-admin01", "anthropic", "admin"],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this admin key immediately in the Anthropic Console under"
+        " Organization Settings > API Keys. Audit org membership and billing"
+        " for unauthorized changes."
+    ),
+    tags=["ai", "anthropic", "llm", "admin"],
+)
+
+
+# ===================================================
+# AWS BEDROCK (AI service keys, distinct from IAM)
+# ===================================================
+
+AWS_BEDROCK_LONG_LIVED_KEY = SecretPattern(
+    id="aws_bedrock_long_lived_key",
+    name="AWS Bedrock Long-Lived API Key",
+    description=(
+        "Long-lived AWS Bedrock API key with ABSK prefix."
+        " Distinct from IAM access keys -- grants direct access to Bedrock"
+        " hosted foundation models (Claude, Llama, Titan, etc.)."
+    ),
+    provider="aws-bedrock",
+    severity="critical",
+    # Pattern attribution: betterleaks v1.0.0 config/betterleaks.toml:365 (MIT)
+    #   https://github.com/betterleaks/betterleaks
+    # See ATTRIBUTION.md for full license notice.
+    regex=re.compile(
+        r"(?P<secret>ABSK[A-Za-z0-9+/]{109,269}={0,2})"
+        r"(?![A-Za-z0-9+/=])",
+        re.ASCII,
+    ),
+    confidence_base=0.95,
+    entropy_threshold=3.0,
+    context_keywords=["absk", "bedrock", "aws_bedrock", "BEDROCK_API_KEY"],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this Bedrock API key in the AWS Console under Bedrock >"
+        " API keys. Rotate and audit model invocation logs for unauthorized usage."
+    ),
+    tags=["ai", "aws", "bedrock", "llm"],
+)
+
+
+AWS_BEDROCK_SHORT_LIVED_KEY = SecretPattern(
+    id="aws_bedrock_short_lived_key",
+    name="AWS Bedrock Short-Lived API Key",
+    description=(
+        "Short-lived AWS Bedrock API key. Begins with bedrock-api-key-"
+        " followed by the literal base64 of bedrock.amazonaws.com -- a"
+        " near-zero-FP signal."
+    ),
+    provider="aws-bedrock",
+    severity="critical",
+    # Pattern attribution: betterleaks v1.0.0 config/betterleaks.toml:375 (MIT)
+    #   https://github.com/betterleaks/betterleaks
+    # Extended with trailing [A-Za-z0-9+/=]+ to capture the full key body.
+    # See ATTRIBUTION.md for full license notice.
+    regex=re.compile(
+        r"(?P<secret>bedrock-api-key-YmVkcm9jay5hbWF6b25hd3MuY29t[A-Za-z0-9+/=]+)"
+        r"(?![A-Za-z0-9+/=])",
+        re.ASCII,
+    ),
+    confidence_base=0.97,
+    entropy_threshold=3.0,
+    context_keywords=["bedrock-api-key-", "bedrock", "aws_bedrock"],
+    known_test_values=set(),
+    recommendation=(
+        "Short-lived Bedrock keys expire automatically but should still"
+        " be rotated immediately if exposed. Audit Bedrock model invocation logs."
+    ),
+    tags=["ai", "aws", "bedrock", "llm"],
+)
+
+
+# ===================================================
+# VERCEL AI GATEWAY (distinct from generic Vercel tokens)
+# ===================================================
+
+VERCEL_AI_GATEWAY_KEY = SecretPattern(
+    id="vercel_ai_gateway_key",
+    name="Vercel AI Gateway Key",
+    description=(
+        "Vercel AI Gateway API key with vck_ prefix. Routes inference to"
+        " OpenAI, Anthropic, and other providers via Vercel's AI Gateway --"
+        " exposes downstream AI billing."
+    ),
+    provider="vercel",
+    severity="critical",
+    # Pattern attribution: betterleaks v1.0.0 config/betterleaks.toml:4748 (MIT)
+    #   https://github.com/betterleaks/betterleaks
+    # See ATTRIBUTION.md for full license notice.
+    regex=re.compile(
+        r"(?P<secret>vck_[A-Za-z0-9_\-]{56})"
+        r"(?![A-Za-z0-9_\-])",
+        re.ASCII,
+    ),
+    confidence_base=0.97,
+    entropy_threshold=3.5,
+    context_keywords=["vck_", "vercel", "ai-gateway", "ai_gateway", "AI_GATEWAY_API_KEY"],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key in the Vercel dashboard under AI Gateway > API Keys."
+        " Audit downstream model usage for unauthorized inference charges."
+    ),
+    tags=["ai", "vercel", "gateway", "llm"],
+)
+
+
+# ===================================================
+# WEIGHTS & BIASES (ML experiment tracking)
+# ===================================================
+
+WEIGHTS_AND_BIASES_V1_KEY = SecretPattern(
+    id="weights_and_biases_v1_key",
+    name="Weights & Biases v1 API Key",
+    description=(
+        "Weights & Biases v1 API key with wandb_v1_ prefix."
+        " Grants access to ML experiment tracking, artifact storage, and"
+        " model registry."
+    ),
+    provider="wandb",
+    severity="high",
+    # Pattern attribution: betterleaks v1.0.0 config/betterleaks.toml:4930 (MIT)
+    #   https://github.com/betterleaks/betterleaks
+    # See ATTRIBUTION.md for full license notice.
+    regex=re.compile(
+        r"(?P<secret>wandb_v1_[A-Za-z0-9_]{77})"
+        r"(?![A-Za-z0-9_])",
+        re.ASCII,
+    ),
+    confidence_base=0.97,
+    entropy_threshold=3.5,
+    context_keywords=["wandb_v1_", "wandb", "WANDB_API_KEY", "weights_and_biases"],
+    known_test_values=set(),
+    recommendation=(
+        "Revoke this key at wandb.ai/authorize. Audit experiment, artifact,"
+        " and model registry access for unauthorized changes."
+    ),
+    tags=["ai", "wandb", "ml", "experiment-tracking"],
+)
+
+
 register(
     OPENAI_API_KEY,
     ANTHROPIC_API_KEY,
+    ANTHROPIC_ADMIN_API_KEY,
     COHERE_API_KEY,
     HUGGINGFACE_TOKEN,
     REPLICATE_API_TOKEN,
@@ -452,4 +624,8 @@ register(
     DEEPGRAM_API_KEY,
     LANGFUSE_SECRET_KEY,
     MISTRAL_API_KEY,
+    AWS_BEDROCK_LONG_LIVED_KEY,
+    AWS_BEDROCK_SHORT_LIVED_KEY,
+    VERCEL_AI_GATEWAY_KEY,
+    WEIGHTS_AND_BIASES_V1_KEY,
 )

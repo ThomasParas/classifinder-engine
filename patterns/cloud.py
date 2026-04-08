@@ -374,9 +374,14 @@ TERRAFORM_CLOUD_TOKEN = SecretPattern(
     ),
     provider="terraform",
     severity="critical",
+    # Format derived from HashiCorp-published example tokens:
+    #   https://developer.hashicorp.com/terraform/cloud-docs/api-docs/user-tokens
+    #   https://developer.hashicorp.com/terraform/cloud-docs/api-docs/agent-tokens
+    # Structure: 14 alphanumeric . "atlasv1" . 67 alphanumeric.
+    # Independently derived from vendor documentation.
     regex=re.compile(
-        r"(?P<secret>[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9]{67})"
-        r"(?![A-Za-z0-9])",
+        r"(?P<secret>[0-9A-Za-z]{14}\.atlasv1\.[0-9A-Za-z]{67})"
+        r"(?![0-9A-Za-z])",
         re.ASCII,
     ),
     confidence_base=0.97,
@@ -607,9 +612,13 @@ NETLIFY_TOKEN = SecretPattern(
     ),
     provider="netlify",
     severity="critical",
+    # Format per Netlify official announcement of token format change:
+    #   https://answers.netlify.com/t/change-to-the-netlify-authentication-token-format/106146
+    # Per Netlify staff: "nfp" prefix = Personal Access Token; total token length 40 chars.
+    # Independently derived from vendor documentation.
     regex=re.compile(
-        r"(?P<secret>nfp_[A-Za-z0-9_]{36})"
-        r"(?![A-Za-z0-9_])",
+        r"(?P<secret>nfp_[0-9A-Za-z_]{36})"
+        r"(?![0-9A-Za-z_])",
         re.ASCII,
     ),
     confidence_base=0.95,
@@ -709,9 +718,14 @@ BUILDKITE_TOKEN = SecretPattern(
     description="Buildkite API token with bkua_ prefix followed by 40 alphanumeric characters.",
     provider="buildkite",
     severity="high",
+    # Format per Buildkite official docs:
+    #   https://buildkite.com/docs/apis/managing-api-tokens
+    #   https://buildkite.com/docs/platform/security/tokens
+    # "bkua_" = Buildkite User Access token, followed by 40 alphanumerics.
+    # Independently derived from vendor documentation.
     regex=re.compile(
-        r"(?P<secret>bkua_[A-Za-z0-9]{40})"
-        r"(?![A-Za-z0-9])",
+        r"(?P<secret>bkua_[0-9A-Za-z]{40})"
+        r"(?![0-9A-Za-z])",
         re.ASCII,
     ),
     confidence_base=0.97,

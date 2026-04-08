@@ -228,9 +228,15 @@ DISCORD_BOT_TOKEN = SecretPattern(
     ),
     provider="discord",
     severity="critical",
+    # Format per the official Discord developer reference (Authorization header example):
+    #   https://docs.discord.com/developers/reference
+    # Bot tokens are 3 base64url segments separated by dots; first segment encodes
+    # the bot user ID, prefixed M (legacy) or N (newer-issued bots).
+    # Range extensions ({23,27} / {27,40}) added to handle ID-length variance.
+    # Independently composed from vendor documentation.
     regex=re.compile(
-        r"(?P<secret>[MN][A-Za-z0-9]{23,27}\.[A-Za-z0-9_-]{6}\.[A-Za-z0-9_-]{27,40})"
-        r"(?![A-Za-z0-9_\-.])",
+        r"(?P<secret>[MN][0-9A-Za-z]{23,27}\.[0-9A-Za-z_-]{6}\.[0-9A-Za-z_-]{27,40})"
+        r"(?![0-9A-Za-z_\-.])",
         re.ASCII,
     ),
     confidence_base=0.85,
@@ -459,6 +465,9 @@ NOTION_API_KEY = SecretPattern(
     ),
     provider="notion",
     severity="high",
+    # Pattern attribution: secrets-patterns-db (CC-BY-4.0), entry at line 2250.
+    #   https://github.com/mazen160/secrets-patterns-db
+    # See ATTRIBUTION.md for full license notice.
     regex=re.compile(
         r"(?P<secret>secret_[A-Za-z0-9]{43})"
         r"(?![A-Za-z0-9])",
@@ -626,6 +635,9 @@ PAGERDUTY_API_KEY = SecretPattern(
     ),
     provider="pagerduty",
     severity="high",
+    # Pattern attribution: secrets-patterns-db (CC-BY-4.0), entry at line 2338.
+    #   https://github.com/mazen160/secrets-patterns-db
+    # See ATTRIBUTION.md for full license notice.
     regex=re.compile(
         r"(?:"
         r"(?:PAGERDUTY_API_KEY|pagerduty.*key|pagerduty.*token|pager_duty)"

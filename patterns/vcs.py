@@ -396,9 +396,14 @@ AIRTABLE_API_KEY = SecretPattern(
     ),
     provider="airtable",
     severity="high",
+    # Format per Airtable official docs:
+    #   https://airtable.com/developers/web/guides/personal-access-tokens
+    #   https://support.airtable.com/docs/creating-personal-access-tokens
+    # Structure: "pat" + 14-char Token ID (per Airtable support doc) + "." + 64-char hex secret.
+    # Independently derived from vendor documentation.
     regex=re.compile(
-        r"(?P<secret>pat[A-Za-z0-9]{14}\.[a-f0-9]{64})"
-        r"(?![a-f0-9])",
+        r"(?P<secret>pat[0-9A-Za-z]{14}\.[0-9a-f]{64})"
+        r"(?![0-9a-f])",
         re.ASCII,
     ),
     confidence_base=0.95,

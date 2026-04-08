@@ -115,6 +115,10 @@ MONGODB_CONNECTION_STRING = SecretPattern(
     ),
     provider="mongodb",
     severity="high",
+    # Connection string format per the official MongoDB URI spec:
+    #   https://www.mongodb.com/docs/manual/reference/connection-string-formats/
+    # "mongodb://" and "mongodb+srv://" are vendor-defined URI schemes.
+    # Independently composed from the spec.
     regex=re.compile(
         r"(?P<secret>"
         r"mongodb(?:\+srv)?://"
@@ -155,6 +159,10 @@ REDIS_CONNECTION_STRING = SecretPattern(
     description="Redis connection URI containing embedded credentials.",
     provider="redis",
     severity="high",
+    # URI scheme registered with IANA:
+    #   https://www.iana.org/assignments/uri-schemes/prov/redis
+    #   https://www.iana.org/assignments/uri-schemes/prov/rediss
+    # "rediss://" = Redis-over-TLS variant. Independently composed from the registration.
     regex=re.compile(
         r"(?P<secret>"
         r"redis(?:s)?://"
