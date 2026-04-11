@@ -31,6 +31,7 @@ OPENAI_API_KEY = SecretPattern(
     ),
     provider="openai",
     severity="critical",
+    # Independently authored — sk- prefix derived from OpenAI API documentation
     regex=re.compile(
         r"(?P<secret>sk-(?:proj-)?[a-zA-Z0-9]{32,})"
         r"(?![a-zA-Z0-9])",
@@ -95,6 +96,7 @@ COHERE_API_KEY = SecretPattern(
     ),
     provider="cohere",
     severity="high",
+    # Independently authored — context-gated 40-char format; no verbatim external source
     regex=re.compile(
         r"(?:"
         r"(?:COHERE_API_KEY|cohere.*api.*key|cohere.*key)"
@@ -135,6 +137,7 @@ HUGGINGFACE_TOKEN = SecretPattern(
     ),
     provider="huggingface",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3248) — hf_ vendor prefix
     regex=re.compile(
         r"(?P<secret>hf_[A-Za-z0-9]{34,})"
         r"(?![A-Za-z0-9])",
@@ -174,6 +177,7 @@ REPLICATE_API_TOKEN = SecretPattern(
     ),
     provider="replicate",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4168) — r8_ vendor prefix
     regex=re.compile(
         r"(?P<secret>r8_[A-Za-z0-9]{36,})"
         r"(?![A-Za-z0-9])",
@@ -207,6 +211,7 @@ GROQ_API_KEY = SecretPattern(
     ),
     provider="groq",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3146) — gsk_ vendor prefix
     regex=re.compile(
         r"(?P<secret>gsk_[A-Za-z0-9]{52,})"
         r"(?![A-Za-z0-9])",
@@ -241,6 +246,7 @@ DEEPSEEK_API_KEY = SecretPattern(
     ),
     provider="deepseek",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:695) — sk- + DeepSeek context
     regex=re.compile(
         r"(?:"
         r"(?:DEEPSEEK_API_KEY|deepseek.*api.*key|deepseek.*key|deepseek)"
@@ -276,6 +282,7 @@ XAI_API_KEY = SecretPattern(
     description="xAI (Grok) API key with xai- prefix. Grants access to Grok language models.",
     provider="xai",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4956) — xai- vendor prefix
     regex=re.compile(
         r"(?P<secret>xai-[A-Za-z0-9]{20,})"
         r"(?![A-Za-z0-9])",
@@ -303,6 +310,7 @@ ELEVENLABS_API_KEY = SecretPattern(
     ),
     provider="elevenlabs",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 — context-gated [a-f0-9]{32}
     regex=re.compile(
         r"(?:"
         r"(?:ELEVENLABS_API_KEY|ELEVEN_LABS_API_KEY|xi-api-key|elevenlabs.*key)"
@@ -334,6 +342,7 @@ ASSEMBLYAI_API_KEY = SecretPattern(
     ),
     provider="assemblyai",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 — context-gated [a-f0-9]{32}
     regex=re.compile(
         r"(?:"
         r"(?:ASSEMBLYAI_API_KEY|ASSEMBLY_AI_KEY|assemblyai.*key)"
@@ -365,6 +374,7 @@ DEEPGRAM_API_KEY = SecretPattern(
     ),
     provider="deepgram",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 — context-gated [a-f0-9]{40}
     regex=re.compile(
         r"(?:"
         r"(?:DEEPGRAM_API_KEY|DEEPGRAM_KEY|deepgram.*key)"
@@ -396,6 +406,7 @@ LANGFUSE_SECRET_KEY = SecretPattern(
     ),
     provider="langfuse",
     severity="high",
+    # Independently authored — sk-lf- vendor prefix per LangFuse documentation
     regex=re.compile(
         r"(?P<secret>sk-lf-[A-Za-z0-9\-]{20,})"
         r"(?![A-Za-z0-9\-])",
@@ -423,6 +434,7 @@ MISTRAL_API_KEY = SecretPattern(
     ),
     provider="mistral",
     severity="critical",
+    # Independently authored — context-gated 32-char format; no verbatim external source
     regex=re.compile(
         r"(?:"
         r"(?:MISTRAL_API_KEY|mistral.*key|mistral.*token)"

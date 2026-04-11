@@ -31,6 +31,7 @@ AWS_ACCESS_KEY = SecretPattern(
     ),
     provider="aws",
     severity="critical",
+    # Vendor-published format — AKIA/ASIA prefix is AWS-documented IAM key format
     regex=re.compile(
         r"(?P<secret>(?:AKIA|ASIA)[0-9A-Z]{16,20})"
         r"(?![0-9A-Za-z])",  # negative lookahead: must not be followed by more alnum
@@ -69,6 +70,7 @@ AWS_SECRET_KEY = SecretPattern(
     ),
     provider="aws",
     severity="critical",
+    # Vendor-published format — context-gated 40-char base64; AWS-documented credential
     regex=re.compile(
         # Match when preceded by common env var names or config keys
         r"(?:"
@@ -107,6 +109,7 @@ GCP_API_KEY = SecretPattern(
     ),
     provider="gcp",
     severity="critical",
+    # Vendor-published format — AIza prefix is Google-published GCP API key format
     regex=re.compile(
         r"(?P<secret>AIza[0-9A-Za-z\-_]{35})"
         r"(?![0-9A-Za-z\-_])",
@@ -146,6 +149,7 @@ GCP_SERVICE_ACCOUNT_KEY = SecretPattern(
     ),
     provider="gcp",
     severity="critical",
+    # Vendor-published format — PEM key within JSON service account file (RFC 7468 + Google docs)
     regex=re.compile(
         r"(?P<secret>"
         r"\"private_key\"\s*:\s*\"-----BEGIN\s(?:RSA\s)?PRIVATE\sKEY-----"
@@ -183,6 +187,7 @@ AZURE_STORAGE_KEY = SecretPattern(
     description=("Azure Storage account access key, 88-character base64 string ending with ==."),
     provider="azure",
     severity="critical",
+    # Independently authored — context-gated 86-char base64 + == suffix; Azure-documented format
     regex=re.compile(
         r"(?:"
         r"(?:AccountKey|account_key|AZURE_STORAGE_KEY|azure_storage_key)"
@@ -223,6 +228,7 @@ AZURE_AD_CLIENT_SECRET = SecretPattern(
     ),
     provider="azure",
     severity="high",
+    # Independently authored — context-gated 34-44 char secret; Azure-documented credential
     regex=re.compile(
         r"(?:"
         r"(?:AZURE_CLIENT_SECRET|client_secret|clientSecret)"
@@ -262,6 +268,7 @@ DIGITALOCEAN_TOKEN = SecretPattern(
     description=("DigitalOcean API token with dop_v1_ prefix, 64 hex characters."),
     provider="digitalocean",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:738) — dop_v1_ vendor prefix
     regex=re.compile(
         r"(?P<secret>dop_v1_[a-f0-9]{64})"
         r"(?![a-f0-9])",
@@ -286,6 +293,7 @@ HEROKU_API_KEY = SecretPattern(
     description=("Heroku API key, a UUID-format string (36 chars including hyphens)."),
     provider="heroku",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3220) — context-gated UUID
     regex=re.compile(
         r"(?:"
         r"(?:HEROKU_API_KEY|heroku_api_key|heroku.*api.*key)"
@@ -317,6 +325,7 @@ CLOUDFLARE_API_TOKEN = SecretPattern(
     ),
     provider="cloudflare",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:509) — context-gated 40-char
     regex=re.compile(
         r"(?:"
         r"(?:CLOUDFLARE_API_TOKEN|CF_API_TOKEN|cloudflare.*token)"
@@ -347,6 +356,7 @@ DOPPLER_TOKEN = SecretPattern(
     ),
     provider="doppler",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:786) — dp.pt. vendor prefix
     regex=re.compile(
         r"(?P<secret>dp\.pt\.[A-Za-z0-9]{40,44})"
         r"(?![A-Za-z0-9])",
@@ -414,6 +424,7 @@ VAULT_TOKEN = SecretPattern(
     ),
     provider="vault",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4731) — hvs. vendor prefix
     regex=re.compile(
         r"(?P<secret>hvs\.[A-Za-z0-9]{24,})"
         r"(?![A-Za-z0-9])",
@@ -449,6 +460,7 @@ PULUMI_ACCESS_TOKEN = SecretPattern(
     ),
     provider="pulumi",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4129) — pul- vendor prefix
     regex=re.compile(
         r"(?P<secret>pul-[a-f0-9]{40})"
         r"(?![a-f0-9])",
@@ -483,6 +495,7 @@ FLY_API_TOKEN = SecretPattern(
     ),
     provider="fly",
     severity="critical",
+    # Independently authored — fo1_ vendor prefix per Fly.io access token documentation
     regex=re.compile(
         r"(?P<secret>fo1_[A-Za-z0-9]{39})"
         r"(?![A-Za-z0-9])",
@@ -518,6 +531,7 @@ ALIBABA_ACCESS_KEY = SecretPattern(
     ),
     provider="alibaba",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:177) — LTAI vendor prefix
     regex=re.compile(
         r"(?P<secret>LTAI[A-Za-z0-9]{17,21})"
         r"(?![A-Za-z0-9])",
@@ -552,6 +566,7 @@ VERCEL_ACCESS_TOKEN = SecretPattern(
     ),
     provider="vercel",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4798) — vca_ vendor prefix
     regex=re.compile(
         r"(?P<secret>vca_[A-Za-z0-9]{50,70})"
         r"(?![A-Za-z0-9])",
@@ -578,6 +593,7 @@ VERCEL_REFRESH_TOKEN = SecretPattern(
     ),
     provider="vercel",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4823) — vcr_ vendor prefix
     regex=re.compile(
         r"(?P<secret>vcr_[A-Za-z0-9]{50,70})"
         r"(?![A-Za-z0-9])",
@@ -648,6 +664,7 @@ IBM_CLOUD_API_KEY = SecretPattern(
     ),
     provider="ibm",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 (rules-stable.yml:~1740) — context-gated 44-char
     regex=re.compile(
         r"(?:"
         r"(?:IBM_API_KEY|IBM_CLOUD_API_KEY|ibm.*api.*key|ibm.*token)"
@@ -688,6 +705,7 @@ OKTA_API_TOKEN = SecretPattern(
     ),
     provider="okta",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3821) — context-gated 00-prefix
     regex=re.compile(
         r"(?:"
         r"(?:OKTA_API_TOKEN|OKTA_TOKEN|okta.*token|okta.*key)"
@@ -750,6 +768,7 @@ RAILWAY_TOKEN = SecretPattern(
     ),
     provider="railway",
     severity="high",
+    # Independently authored — context-gated UUID; Railway-documented deploy token format
     regex=re.compile(
         r"(?:"
         r"(?:RAILWAY_TOKEN|railway.*token)"

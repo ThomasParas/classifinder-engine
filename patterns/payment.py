@@ -32,6 +32,7 @@ STRIPE_LIVE_SECRET_KEY = SecretPattern(
     ),
     provider="stripe",
     severity="critical",
+    # Vendor-published format — sk_live_ prefix is Stripe-documented live secret key
     regex=re.compile(
         r"(?P<secret>sk_live_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
@@ -64,6 +65,7 @@ STRIPE_TEST_SECRET_KEY = SecretPattern(
     ),
     provider="stripe",
     severity="medium",
+    # Vendor-published format — sk_test_ prefix is Stripe-documented test secret key
     regex=re.compile(
         r"(?P<secret>sk_test_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
@@ -99,6 +101,7 @@ STRIPE_LIVE_PUBLISHABLE_KEY = SecretPattern(
     ),
     provider="stripe",
     severity="low",  # publishable keys are semi-public by design
+    # Vendor-published format — pk_live_ prefix is Stripe-documented publishable key
     regex=re.compile(
         r"(?P<secret>pk_live_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
@@ -128,6 +131,7 @@ STRIPE_WEBHOOK_SECRET = SecretPattern(
     description=("Stripe webhook endpoint signing secret, used to verify webhook payloads."),
     provider="stripe",
     severity="high",
+    # Vendor-published format — whsec_ prefix is Stripe-documented webhook signing secret
     regex=re.compile(
         r"(?P<secret>whsec_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
@@ -162,6 +166,7 @@ STRIPE_RESTRICTED_KEY = SecretPattern(
     ),
     provider="stripe",
     severity="high",
+    # Vendor-published format — rk_live_ prefix is Stripe-documented restricted key
     regex=re.compile(
         r"(?P<secret>rk_live_[a-zA-Z0-9]{24,99})"
         r"(?![a-zA-Z0-9])",
@@ -189,6 +194,7 @@ PAYPAL_CLIENT_SECRET = SecretPattern(
     description=("PayPal REST API client secret. Used with client ID for OAuth authentication."),
     provider="paypal",
     severity="critical",
+    # Independently authored — context-gated E-prefix 50-80 char; PayPal-documented OAuth credential
     regex=re.compile(
         r"(?:"
         r"(?:PAYPAL_CLIENT_SECRET|paypal.*client.*secret|paypal.*secret)"
@@ -231,6 +237,7 @@ SQUARE_ACCESS_TOKEN = SecretPattern(
     ),
     provider="square",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:922) — EAA prefix (Square-documented)
     regex=re.compile(
         r"(?P<secret>EAA[a-zA-Z0-9\-_]{40,100})"
         r"(?![a-zA-Z0-9\-_])",
@@ -283,6 +290,7 @@ CREDIT_CARD_NUMBER = SecretPattern(
     ),
     provider="payment",
     severity="high",
+    # Vendor-published format — IIN/BIN ranges per PCI-DSS and card network specifications
     regex=re.compile(
         r"(?<![0-9])"  # negative lookbehind: not preceded by digit
         r"(?P<secret>"
@@ -340,6 +348,7 @@ SHOPIFY_ACCESS_TOKEN = SecretPattern(
     ),
     provider="shopify",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4320) — shpat_ vendor prefix
     regex=re.compile(
         r"(?P<secret>shpat_[a-fA-F0-9]{32})"
         r"(?![a-fA-F0-9])",
@@ -371,6 +380,7 @@ SHOPIFY_CUSTOM_TOKEN = SecretPattern(
     ),
     provider="shopify",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4330) — shpca_ vendor prefix
     regex=re.compile(
         r"(?P<secret>shpca_[a-fA-F0-9]{32})"
         r"(?![a-fA-F0-9])",
@@ -398,6 +408,7 @@ SHOPIFY_PRIVATE_TOKEN = SecretPattern(
     ),
     provider="shopify",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4340) — shppa_ vendor prefix
     regex=re.compile(
         r"(?P<secret>shppa_[a-fA-F0-9]{32})"
         r"(?![a-fA-F0-9])",
@@ -432,6 +443,7 @@ ETHEREUM_PRIVATE_KEY = SecretPattern(
     ),
     provider="ethereum",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4053) — context-gated 0x+64hex
     regex=re.compile(
         r"(?:"
         r"(?:ETH_PRIVATE_KEY|ETHEREUM_PRIVATE_KEY|ethereum.*private.*key|eth.*key|wallet.*key|private.*key.*eth)"
@@ -477,6 +489,7 @@ BITCOIN_WIF_KEY = SecretPattern(
     ),
     provider="bitcoin",
     severity="critical",
+    # Vendor-published format — WIF key format per BIP-0178 specification (Base58Check encoding)
     regex=re.compile(
         r"(?:"
         r"(?:BTC_PRIVATE_KEY|BITCOIN_PRIVATE_KEY|bitcoin.*private.*key|bitcoin.*wif|btc.*key|wallet.*wif)"
@@ -519,6 +532,7 @@ RAZORPAY_KEY = SecretPattern(
     ),
     provider="razorpay",
     severity="critical",
+    # Vendor-published format — rzp_live_/rzp_test_ prefix is Razorpay-documented API key format
     regex=re.compile(
         r"(?P<secret>rzp_(?:live|test)_[A-Za-z0-9]{14,})"
         r"(?![A-Za-z0-9])",

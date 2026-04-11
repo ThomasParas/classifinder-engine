@@ -31,6 +31,7 @@ GITHUB_PAT_CLASSIC = SecretPattern(
     ),
     provider="github",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:2771) — ghp_ vendor prefix
     regex=re.compile(
         r"(?P<secret>ghp_[A-Za-z0-9]{30,40})"
         r"(?![A-Za-z0-9])",
@@ -59,6 +60,7 @@ GITHUB_PAT_FINE_GRAINED = SecretPattern(
     ),
     provider="github",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:2717) — github_pat_ vendor prefix
     regex=re.compile(
         r"(?P<secret>github_pat_[A-Za-z0-9_]{82})"
         r"(?![A-Za-z0-9_])",
@@ -90,6 +92,7 @@ GITHUB_OAUTH_SECRET = SecretPattern(
     description=("GitHub OAuth application client secret with gho_ prefix."),
     provider="github",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:2744) — gho_ vendor prefix
     regex=re.compile(
         r"(?P<secret>gho_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
@@ -116,6 +119,7 @@ GITHUB_APP_INSTALLATION_TOKEN = SecretPattern(
     ),
     provider="github",
     severity="high",
+    # Vendor-published format (ghs_ prefix per GitHub Apps documentation)
     regex=re.compile(
         r"(?P<secret>ghs_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
@@ -143,6 +147,7 @@ GITHUB_USER_TO_SERVER_TOKEN = SecretPattern(
     ),
     provider="github",
     severity="critical",
+    # Vendor-published format (ghu_ prefix per GitHub Apps documentation)
     regex=re.compile(
         r"(?P<secret>ghu_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
@@ -170,6 +175,7 @@ GITLAB_PAT = SecretPattern(
     description="GitLab personal access token with glpat- prefix.",
     provider="gitlab",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:2925) — glpat- vendor prefix
     regex=re.compile(
         r"(?P<secret>glpat-[A-Za-z0-9\-_]{20,})"
         r"(?![A-Za-z0-9\-_])",
@@ -196,6 +202,7 @@ GITLAB_PIPELINE_TRIGGER = SecretPattern(
     description="GitLab CI pipeline trigger token with glptt- prefix.",
     provider="gitlab",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:2973) — glptt- vendor prefix
     regex=re.compile(
         r"(?P<secret>glptt-[A-Za-z0-9\-_]{20,})"
         r"(?![A-Za-z0-9\-_])",
@@ -226,6 +233,7 @@ BITBUCKET_APP_PASSWORD = SecretPattern(
     ),
     provider="bitbucket",
     severity="high",
+    # Independently authored — context-gated 20-40 char; Bitbucket-documented app password format
     regex=re.compile(
         r"(?:"
         r"(?:BITBUCKET_APP_PASSWORD|bitbucket.*password|bitbucket.*token)"
@@ -260,6 +268,7 @@ CIRCLECI_TOKEN = SecretPattern(
     description=("CircleCI personal or project API token. Typically a 40-character hex string."),
     provider="circleci",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml) — context-gated 40-char hex
     regex=re.compile(
         r"(?:"
         r"(?:CIRCLECI_TOKEN|CIRCLE_TOKEN|circleci.*token)"
@@ -297,6 +306,7 @@ NPM_TOKEN = SecretPattern(
     ),
     provider="npm",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3761) — npm_ vendor prefix
     regex=re.compile(
         r"(?P<secret>npm_[A-Za-z0-9]{36})"
         r"(?![A-Za-z0-9])",
@@ -329,6 +339,7 @@ PYPI_TOKEN = SecretPattern(
     ),
     provider="pypi",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4139) — pypi-AgEI base64 anchor
     regex=re.compile(
         r"(?P<secret>pypi-AgEIcHlwaS5vcmc[A-Za-z0-9\-_]{50,})"
         r"(?![A-Za-z0-9\-_])",
@@ -360,6 +371,7 @@ RUBYGEMS_TOKEN = SecretPattern(
     ),
     provider="rubygems",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4192) — rubygems_ vendor prefix
     regex=re.compile(
         r"(?P<secret>rubygems_[A-Za-z0-9]{48})"
         r"(?![A-Za-z0-9])",
@@ -431,6 +443,7 @@ NUGET_API_KEY = SecretPattern(
     ),
     provider="nuget",
     severity="critical",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 (rules-stable.yml:5280) — oy2 vendor prefix
     regex=re.compile(
         r"(?P<secret>oy2[a-z0-9]{43})"
         r"(?![a-z0-9])",

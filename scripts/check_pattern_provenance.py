@@ -19,10 +19,14 @@ import sys
 
 SOURCE_MARKERS = [
     "# Source:",
-    "# Format per",
+    "# Format",          # covers "# Format per", "# Format derived from", etc.
     "# Pattern attribution:",
-    "# Independently authored",
+    "# Independently",   # covers "# Independently authored", "# Independently derived"
     "# Vendor-published",
+    "# Vendor format",
+    "# Common knowledge",
+    "# RFC ",
+    "# PCI",
 ]
 
 

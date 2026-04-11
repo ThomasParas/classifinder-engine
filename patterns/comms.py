@@ -30,6 +30,7 @@ SLACK_BOT_TOKEN = SecretPattern(
     ),
     provider="slack",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4394) — xoxb- vendor prefix
     regex=re.compile(r"(?P<secret>xoxb-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24,36})", re.ASCII),
     confidence_base=0.97,
     entropy_threshold=0.0,
@@ -53,6 +54,7 @@ SLACK_USER_TOKEN = SecretPattern(
     ),
     provider="slack",
     severity="critical",
+    # Vendor-published format — xoxp- prefix is Slack-documented user token format
     regex=re.compile(
         r"(?P<secret>xoxp-[0-9]{10,13}-[0-9]{10,13}-[0-9]{10,13}-[a-f0-9]{32})", re.ASCII
     ),
@@ -78,6 +80,7 @@ SLACK_WEBHOOK_URL = SecretPattern(
     ),
     provider="slack",
     severity="high",
+    # Vendor-published format — hooks.slack.com URL structure is Slack-documented
     regex=re.compile(
         r"(?P<secret>https://hooks\.slack\.com/services/"
         r"T[A-Z0-9]{8,12}/B[A-Z0-9]{8,12}/[a-zA-Z0-9]{24})",
@@ -108,6 +111,7 @@ TWILIO_ACCOUNT_SID = SecretPattern(
     ),
     provider="twilio",
     severity="medium",
+    # Vendor-published format — AC prefix is Twilio-documented Account SID format
     regex=re.compile(
         r"(?P<secret>AC[a-f0-9]{32})"
         r"(?![a-f0-9])",
@@ -135,6 +139,7 @@ TWILIO_AUTH_TOKEN = SecretPattern(
     ),
     provider="twilio",
     severity="critical",
+    # Independently authored — context-gated 32-char hex; Twilio-documented credential
     regex=re.compile(
         r"(?:"
         r"(?:TWILIO_AUTH_TOKEN|twilio.*auth.*token|auth_token)"
@@ -173,6 +178,7 @@ SENDGRID_API_KEY = SecretPattern(
     ),
     provider="sendgrid",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4230) — SG. vendor prefix
     regex=re.compile(r"(?P<secret>SG\.[a-zA-Z0-9\-_]{22}\.[a-zA-Z0-9\-_]{43})", re.ASCII),
     confidence_base=0.99,  # SG. prefix + structure is extremely distinctive
     entropy_threshold=0.0,
@@ -197,6 +203,7 @@ MAILGUN_API_KEY = SecretPattern(
     description=("Mailgun API key with key- prefix followed by a 32-character hex string."),
     provider="mailgun",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3570) — key- vendor prefix
     regex=re.compile(
         r"(?P<secret>key-[a-f0-9]{32})"
         r"(?![a-f0-9])",
@@ -270,6 +277,7 @@ TELEGRAM_BOT_TOKEN = SecretPattern(
     ),
     provider="telegram",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 — numeric_id:token Telegram bot format
     regex=re.compile(
         r"(?P<secret>[0-9]{8,10}:[A-Za-z0-9_\-]{35})"
         r"(?![A-Za-z0-9_\-])",
@@ -306,6 +314,7 @@ NEWRELIC_ADMIN_API_KEY = SecretPattern(
     ),
     provider="newrelic",
     severity="critical",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 (rules-stable.yml:2194) — NRAA- vendor prefix
     regex=re.compile(
         r"(?P<secret>NRAA-[a-f0-9]{27})"
         r"(?![a-f0-9])",
@@ -337,6 +346,7 @@ NEWRELIC_INSIGHTS_KEY = SecretPattern(
     ),
     provider="newrelic",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3720) — NRII-/NRIQ- vendor prefix
     regex=re.compile(
         r"(?P<secret>NRI[IQ]-[A-Za-z0-9\-_]{32})"
         r"(?![A-Za-z0-9\-_])",
@@ -368,6 +378,7 @@ NEWRELIC_USER_API_KEY = SecretPattern(
     ),
     provider="newrelic",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3742) — NRAK- vendor prefix
     regex=re.compile(
         r"(?P<secret>NRAK-[a-z0-9]{27})"
         r"(?![a-z0-9])",
@@ -400,6 +411,7 @@ GRAFANA_API_KEY = SecretPattern(
     ),
     provider="grafana",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3126) — glsa_ vendor prefix
     regex=re.compile(
         r"(?P<secret>glsa_[A-Za-z0-9]{32}_[a-f0-9]{8})"
         r"(?![A-Za-z0-9_])",
@@ -432,6 +444,7 @@ LINEAR_API_KEY = SecretPattern(
     ),
     provider="linear",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3438) — lin_api_ vendor prefix
     regex=re.compile(
         r"(?P<secret>lin_api_[A-Za-z0-9]{40})"
         r"(?![A-Za-z0-9])",
@@ -504,6 +517,7 @@ SENTRY_ORG_TOKEN = SecretPattern(
     ),
     provider="sentry",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4260) — sntrys_eyJ vendor prefix
     regex=re.compile(
         r"(?P<secret>sntrys_eyJ[A-Za-z0-9+/=_]{80,300})"
         r"(?![A-Za-z0-9+/=_])",
@@ -532,6 +546,7 @@ SENTRY_USER_TOKEN = SecretPattern(
     description=("Sentry user auth token with sntryu_ prefix followed by 64 hex characters."),
     provider="sentry",
     severity="critical",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:4270) — sntryu_ vendor prefix
     regex=re.compile(
         r"(?P<secret>sntryu_[a-f0-9]{64})"
         r"(?![a-f0-9])",
@@ -564,6 +579,7 @@ DATADOG_API_KEY = SecretPattern(
     ),
     provider="datadog",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:676) — context-gated 32-char hex
     regex=re.compile(
         r"(?:"
         r"(?:DD_API_KEY|DATADOG_API_KEY|datadog.*api.*key)"
@@ -599,6 +615,7 @@ DATADOG_APP_KEY = SecretPattern(
     ),
     provider="datadog",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 — context-gated 40-char hex
     regex=re.compile(
         r"(?:"
         r"(?:DD_APP_KEY|DATADOG_APP_KEY|datadog.*app.*key)"
@@ -675,6 +692,7 @@ FIGMA_PAT = SecretPattern(
     ),
     provider="figma",
     severity="high",
+    # Pattern attribution: secrets-patterns-db CC-BY-4.0 (rules-stable.yml:1068) — context-gated numeric+UUID
     regex=re.compile(
         r"(?:"
         r"(?:FIGMA_TOKEN|FIGMA_PAT|FIGMA_API_TOKEN|figma.*token|figma.*key)"
@@ -713,6 +731,7 @@ AUTH0_MANAGEMENT_TOKEN = SecretPattern(
     ),
     provider="auth0",
     severity="critical",
+    # Independently authored — context-gated JWT (eyJ header); Auth0-documented token format
     regex=re.compile(
         r"(?:"
         r"(?:AUTH0_MANAGEMENT_TOKEN|AUTH0_TOKEN|AUTH0_API_TOKEN|auth0.*token|auth0.*key|auth0.*secret)"
@@ -752,6 +771,7 @@ DISCORD_WEBHOOK_URL = SecretPattern(
     ),
     provider="discord",
     severity="high",
+    # Vendor-published format — discord.com/api/webhooks/ URL structure is Discord-documented
     regex=re.compile(
         r"(?P<secret>https://discord(?:app)?\.com/api/webhooks/[0-9]{17,20}/[A-Za-z0-9_\-]{60,68})"
         r"(?![A-Za-z0-9_\-])",
@@ -782,6 +802,7 @@ TEAMS_WEBHOOK_URL = SecretPattern(
     ),
     provider="microsoft",
     severity="high",
+    # Vendor-published format — webhook.office.com/webhookb2/ URL structure is Microsoft-documented
     regex=re.compile(
         r"(?P<secret>https://[a-z0-9\-]+\.webhook\.office\.com/webhookb2/"
         r"[a-f0-9\-]{36}@[a-f0-9\-]{36}/IncomingWebhook/[a-f0-9]{32}/[a-f0-9\-]{36})",
@@ -811,6 +832,7 @@ MATTERMOST_TOKEN = SecretPattern(
     ),
     provider="mattermost",
     severity="high",
+    # Pattern attribution: Betterleaks MIT (betterleaks.toml:3620) — context-gated 26-char
     regex=re.compile(
         r"(?:"
         r"(?:MATTERMOST_TOKEN|MATTERMOST_ACCESS_TOKEN|mattermost.*token)"
