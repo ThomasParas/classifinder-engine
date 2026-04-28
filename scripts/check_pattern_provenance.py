@@ -2,8 +2,9 @@
 """
 Pre-commit provenance check for classifinder-engine patterns.
 
-Verifies that every re.compile() in staged patterns/*.py files
-has a source comment within the 5 preceding lines.
+Verifies that every re.compile() in staged
+classifinder_engine/patterns/*.py files has a source comment within the
+5 preceding lines.
 
 Accepted source comment markers:
   # Source:
@@ -37,7 +38,8 @@ def get_staged_pattern_files() -> list[str]:
     )
     return [
         f for f in result.stdout.splitlines()
-        if re.match(r"patterns/[^/]+\.py$", f) and f != "patterns/registry.py"
+        if re.match(r"classifinder_engine/patterns/[^/]+\.py$", f)
+        and f != "classifinder_engine/patterns/registry.py"
     ]
 
 

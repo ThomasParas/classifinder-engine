@@ -32,6 +32,8 @@ POSTGRES_CONNECTION_STRING = SecretPattern(
     ),
     provider="postgresql",
     severity="high",
+    # Source: PostgreSQL libpq connection URI specification.
+    #   https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
     regex=re.compile(
         r"(?P<secret>"
         r"postgres(?:ql)?://"
@@ -74,6 +76,9 @@ MYSQL_CONNECTION_STRING = SecretPattern(
     description="MySQL connection URI containing embedded credentials.",
     provider="mysql",
     severity="high",
+    # Source: MySQL Connector URI specification (mysql:// scheme).
+    #   https://dev.mysql.com/doc/refman/8.0/en/connecting-using-uri-or-key-value-pairs.html
+    # +pymysql / +mysqlconnector dialect prefixes are SQLAlchemy convention.
     regex=re.compile(
         r"(?P<secret>"
         r"mysql(?:\+pymysql|\+mysqlconnector)?://"
@@ -159,10 +164,10 @@ REDIS_CONNECTION_STRING = SecretPattern(
     description="Redis connection URI containing embedded credentials.",
     provider="redis",
     severity="high",
-    # URI scheme registered with IANA:
+    # Source: IANA URI scheme registry (redis, rediss).
     #   https://www.iana.org/assignments/uri-schemes/prov/redis
     #   https://www.iana.org/assignments/uri-schemes/prov/rediss
-    # "rediss://" = Redis-over-TLS variant. Independently composed from the registration.
+    # rediss:// is the Redis-over-TLS variant. Independently composed from the registration.
     regex=re.compile(
         r"(?P<secret>"
         r"redis(?:s)?://"
@@ -196,6 +201,8 @@ PASSWORD_IN_URL = SecretPattern(
     ),
     provider="generic",
     severity="high",
+    # Format per RFC 3986 (URI generic syntax) — userinfo = user:password@.
+    #   https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1
     regex=re.compile(
         r"(?P<secret>"
         r"(?:https?|ftp|amqps?|kafka)://"
@@ -242,6 +249,9 @@ ENV_DATABASE_PASSWORD = SecretPattern(
     ),
     provider="generic",
     severity="high",
+    # Independently authored — common .env / shell-export variable names for
+    # database password assignment. Names sourced from the official Docker
+    # images (postgres, mysql, mongo, redis) and PostgreSQL libpq env vars.
     regex=re.compile(
         r"(?P<context_key>"
         r"(?:DB_PASSWORD|DATABASE_PASSWORD|MYSQL_ROOT_PASSWORD|MYSQL_PASSWORD"
@@ -284,6 +294,9 @@ SSH_PRIVATE_KEY = SecretPattern(
     ),
     provider="generic",
     severity="critical",
+    # Format per RFC 7468 (textual encodings of PKIX, PKCS, and CMS structures)
+    #   https://datatracker.ietf.org/doc/html/rfc7468
+    # plus the OpenSSH-specific BEGIN OPENSSH PRIVATE KEY marker (PROTOCOL.key).
     regex=re.compile(
         r"(?P<secret>"
         r"-----BEGIN\s"
@@ -324,6 +337,9 @@ SUPABASE_SERVICE_KEY = SecretPattern(
     ),
     provider="supabase",
     severity="critical",
+    # Vendor-published env var names per Supabase Dashboard > API:
+    #   https://supabase.com/docs/guides/api/api-keys
+    # JWT format (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.X.Y) per RFC 7519.
     regex=re.compile(
         r"(?:"
         r"(?:SUPABASE_SERVICE_ROLE_KEY|SUPABASE_KEY|SUPABASE_SECRET|supabase.*service.*key|supabase.*token)"

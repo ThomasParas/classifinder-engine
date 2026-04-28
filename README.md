@@ -10,18 +10,23 @@ The scanner engine is a pure function: **text in, findings out.** It has no data
 
 ```
 classifinder-engine/
-├── scanner.py          # Core scan() function — the heart of the product
-├── redactor.py         # redact() function — replaces secrets with safe labels
-├── entropy.py          # Shannon entropy calculator for confidence scoring
-└── patterns/
-    ├── registry.py     # Pattern registry and SecretPattern dataclass
-    ├── cloud.py        # AWS, GCP, Azure, DigitalOcean, Heroku, Cloudflare, Doppler, Terraform, Vault, Pulumi, Fly.io, Alibaba, Vercel, Netlify, IBM Cloud (19 patterns)
-    ├── payment.py      # Stripe, PayPal, Square, Shopify, credit cards with Luhn validation, Ethereum, Bitcoin (13 patterns)
-    ├── vcs.py          # GitHub, GitLab, Bitbucket, CircleCI, npm, PyPI, RubyGems, Airtable, NuGet (14 patterns)
-    ├── comms.py        # Slack, Twilio, SendGrid, Mailgun, Discord, Telegram, New Relic, Grafana, Linear, Notion, Sentry, Datadog, PagerDuty, Figma, Auth0 (22 patterns)
-    ├── database.py     # PostgreSQL, MySQL, MongoDB, Redis, SSH keys, .env passwords, Supabase (8 patterns)
-    ├── generic.py      # JWT, Bearer, Basic Auth, generic API keys, high-entropy strings (5 patterns)
-    └── ai.py           # OpenAI, Anthropic, Cohere, HuggingFace, Replicate, Groq, DeepSeek (7 patterns)
+└── classifinder_engine/
+    ├── __init__.py         # Package entry: re-exports scan, redact, Finding, PATTERN_REGISTRY
+    ├── scanner.py          # Core scan() function — the heart of the product
+    ├── redactor.py         # redact() function — replaces secrets with safe labels
+    ├── entropy.py          # Shannon entropy calculator for confidence scoring
+    ├── decoders.py         # Base64 pre-scan decoder
+    ├── false_positives.py  # Known-junk wordlist filter
+    ├── data/               # fp_wordlist.txt
+    └── patterns/
+        ├── registry.py     # Pattern registry and SecretPattern dataclass
+        ├── cloud.py        # AWS, GCP, Azure, and other cloud-provider keys (22 patterns)
+        ├── payment.py      # Stripe, PayPal, Square, Shopify, credit cards, crypto (14 patterns)
+        ├── vcs.py          # GitHub, GitLab, Bitbucket, CircleCI, package registries (14 patterns)
+        ├── comms.py        # Slack, Twilio, SendGrid, observability and incident tools (25 patterns)
+        ├── database.py     # PostgreSQL, MySQL, MongoDB, Redis, SSH, env passwords (8 patterns)
+        ├── generic.py      # JWT, Bearer, Basic Auth, generic API keys, high-entropy (5 patterns)
+        └── ai.py           # OpenAI, Anthropic, Cohere, HuggingFace, and other LLM provider keys (18 patterns)
 ```
 
 **106 detection patterns** across 7 categories. Each pattern includes a regex, base confidence score, entropy threshold, context keywords, known test values, and remediation guidance.
@@ -29,8 +34,7 @@ classifinder-engine/
 ## How It Works
 
 ```python
-from scanner import scan
-from redactor import redact
+from classifinder_engine import scan, redact
 
 # Scan text for secrets
 findings = scan("AWS_ACCESS_KEY_ID=AKIAJGKJHSKLDJFH3284")

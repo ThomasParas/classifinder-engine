@@ -1,13 +1,50 @@
 [project]
 name = "classifinder-engine"
 version = "0.1.0"
-description = "Standalone secret detection engine — 101 patterns, zero dependencies"
+description = "Standalone secret detection engine — 106 patterns, zero dependencies"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.12"
+authors = [{name = "Thomas Paras", email = "thomasparas87@gmail.com"}]
+keywords = ["secrets", "scanner", "security", "detection", "redaction", "regex"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://classifinder.ai"
+Repository = "https://github.com/classifinder/classifinder-engine"
+Issues = "https://github.com/classifinder/classifinder-engine/issues"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0", "ruff>=0.8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["classifinder_engine"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/classifinder_engine",
+    "/README.md",
+    "/LICENSE",
+    "/ATTRIBUTION.md",
+    "/CONTRIBUTING.md",
+    "/py.typed",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -44,4 +81,4 @@ select = [
 "__init__.py" = ["F401"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["patterns", "scanner", "redactor", "entropy"]
+known-first-party = ["classifinder_engine"]

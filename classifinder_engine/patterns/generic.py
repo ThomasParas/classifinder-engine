@@ -34,6 +34,9 @@ JWT_TOKEN = SecretPattern(
     ),
     provider="generic",
     severity="high",
+    # Format per RFC 7519 (JSON Web Token).
+    #   https://datatracker.ietf.org/doc/html/rfc7519
+    # eyJ is the base64url encoding of '{"', the start of every JWT header.
     regex=re.compile(
         r"(?P<secret>"
         r"eyJ[A-Za-z0-9_-]{10,500}"  # header (base64url)
@@ -83,6 +86,8 @@ BEARER_TOKEN = SecretPattern(
     ),
     provider="generic",
     severity="high",
+    # Format per RFC 6750 (OAuth 2.0 Authorization Framework: Bearer Token Usage).
+    #   https://datatracker.ietf.org/doc/html/rfc6750#section-2.1
     regex=re.compile(
         r"(?:Authorization|authorization|AUTHORIZATION)"
         r"[\s]*[:=][\s]*"
@@ -120,6 +125,9 @@ BASIC_AUTH_HEADER = SecretPattern(
     description=("Base64-encoded username:password in a Basic authorization header."),
     provider="generic",
     severity="high",
+    # Format per RFC 7617 (HTTP Basic Authentication Scheme).
+    #   https://datatracker.ietf.org/doc/html/rfc7617
+    # The encoded portion is base64(username:password).
     regex=re.compile(
         r"(?:Authorization|authorization|AUTHORIZATION)"
         r"[\s]*[:=][\s]*"
@@ -165,6 +173,9 @@ GENERIC_API_KEY_ENV = SecretPattern(
     ),
     provider="generic",
     severity="medium",
+    # Independently authored — common environment-variable naming conventions
+    # for opaque API credentials. Variable names compiled from the most popular
+    # public SDK quickstart docs (no single canonical source).
     regex=re.compile(
         r"(?P<context_key>"
         r"(?:API_KEY|API_SECRET|SECRET_KEY|ACCESS_TOKEN|AUTH_TOKEN"
@@ -219,6 +230,9 @@ GENERIC_HIGH_ENTROPY = SecretPattern(
     ),
     provider="generic",
     severity="low",
+    # Independently authored — catch-all keyword-anchored high-entropy probe.
+    # No external source: this is the lowest-confidence rule, gated by entropy
+    # and context keywords to suppress prose / hashes / IDs.
     regex=re.compile(
         # Only match if preceded by a keyword suggesting this is a secret
         r"(?:"

@@ -25,38 +25,11 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# Add engine root to path (standalone classifinder-engine repo)
-_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(_ROOT.parent))  # monorepo root so classifinder-engine is importable
+# Make the engine package importable when run from the repo root.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import importlib, importlib.util
-
-def _load_engine():
-    """Load classifinder-engine as a package to handle relative imports."""
-    engine_dir = _ROOT
-    pkg = "classifinder_engine"
-
-    def _load(full_name, fpath, search=None):
-        if full_name in sys.modules:
-            return sys.modules[full_name]
-        spec = importlib.util.spec_from_file_location(full_name, fpath,
-               submodule_search_locations=search)
-        mod = importlib.util.module_from_spec(spec)
-        sys.modules[full_name] = mod
-        spec.loader.exec_module(mod)
-        return mod
-
-    _load(pkg, str(engine_dir / "__init__.py"), [str(engine_dir)])
-    _load(f"{pkg}.patterns", str(engine_dir / "patterns/__init__.py"), [str(engine_dir / "patterns")])
-    for sub in ("entropy", "decoders", "patterns.registry", "patterns.cloud",
-                "patterns.payment", "patterns.vcs", "patterns.comms",
-                "patterns.database", "patterns.generic", "patterns.ai"):
-        _load(f"{pkg}.{sub}", str(engine_dir / sub.replace(".", "/")) + ".py")
-    scanner = _load(f"{pkg}.scanner", str(engine_dir / "scanner.py"))
-    registry = _load(f"{pkg}.patterns.registry", str(engine_dir / "patterns/registry.py"))
-    return scanner.scan, registry.PATTERN_REGISTRY
-
-_scan, PATTERN_REGISTRY = _load_engine()
+from classifinder_engine.patterns.registry import PATTERN_REGISTRY
+from classifinder_engine.scanner import scan as _scan
 
 
 # ---------------------------------------------------------------------------
