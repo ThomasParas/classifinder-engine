@@ -5,9 +5,9 @@ Thanks for your interest in contributing! This is the open-source scanner engine
 ## Getting Started
 
 ```bash
-git clone https://github.com/classifinder/classifinder-engine.git
+git clone https://github.com/ClassiFinder/classifinder-engine.git
 cd classifinder-engine
-python -c "from scanner import scan; print(scan('AKIAIOSFODNN7EXAMPLE'))"
+python -c "from classifinder_engine import scan; print(scan('AKIAIOSFODNN7EXAMPLE'))"
 ```
 
 No dependencies beyond the Python 3.12+ standard library.
@@ -16,7 +16,7 @@ No dependencies beyond the Python 3.12+ standard library.
 
 ### Report a False Positive or False Negative
 
-If the engine misclassifies text, [open an issue](https://github.com/classifinder/classifinder-engine/issues) with:
+If the engine misclassifies text, [open an issue](https://github.com/ClassiFinder/classifinder-engine/issues) with:
 
 - The input text (use a fake/test value — never post real secrets)
 - What the engine returned
@@ -26,7 +26,7 @@ You can also report these via the ClassiFinder API's `POST /v1/feedback` endpoin
 
 ### Add a New Detection Pattern
 
-Each pattern lives in one of the category files under `patterns/`:
+Each pattern lives in one of the category files under `classifinder_engine/patterns/`:
 
 | File | Category |
 |------|----------|
@@ -51,7 +51,7 @@ To add a pattern, create a `SecretPattern` instance with:
 - `known_test_values` — list of documented example/test values to penalize
 - `recommendation` — actionable remediation advice
 
-Then register it in `patterns/registry.py` by adding it to `PATTERN_REGISTRY`.
+Then register it in `classifinder_engine/patterns/registry.py` by adding it to `PATTERN_REGISTRY`.
 
 ### Improve an Existing Pattern
 
@@ -62,7 +62,7 @@ If a pattern's regex is too broad (false positives) or too narrow (misses valid 
 The generic patterns (`generic_api_key_env`, `generic_high_entropy`) are the most false-positive-prone. Their accuracy depends on two parameters in the pattern definition:
 
 - `entropy_threshold` — minimum Shannon entropy to avoid the confidence penalty (currently 3.0 for `generic_api_key_env`, 4.5 for `generic_high_entropy`)
-- The entropy penalty itself — currently -0.50 in `scanner.py`
+- The entropy penalty itself — currently -0.50 in `classifinder_engine/scanner.py`
 
 These values were tuned using `classifinder-benchmark/` (private), which scans public GitHub files and collects metadata-only signals (type, confidence, entropy, file context). If you're proposing threshold changes, include before/after data showing the impact on false positive rates. The `classifinder-tests/` corpus suite must pass with zero regressions.
 

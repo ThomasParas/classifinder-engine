@@ -23,8 +23,8 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://classifinder.ai"
-Repository = "https://github.com/classifinder/classifinder-engine"
-Issues = "https://github.com/classifinder/classifinder-engine/issues"
+Repository = "https://github.com/ClassiFinder/classifinder-engine"
+Issues = "https://github.com/ClassiFinder/classifinder-engine/issues"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0", "ruff>=0.8.0"]
@@ -43,7 +43,6 @@ include = [
     "/LICENSE",
     "/ATTRIBUTION.md",
     "/CONTRIBUTING.md",
-    "/py.typed",
 ]
 
 [tool.pytest.ini_options]
