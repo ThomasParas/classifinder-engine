@@ -171,8 +171,12 @@ def scan(
                 if not _luhn_check(digits_only):
                     confidence = 0.15  # fails checksum -- likely not a real card
 
-            # False positive wordlist penalty (only for lower-confidence patterns)
-            if confidence < 0.85:
+            # False positive wordlist penalty (only for lower-confidence patterns).
+            # The wordlist targets fake-credential FPs (terms like "example",
+            # "xxxxxx", "changeme") and is unsafe to apply to prompt-injection
+            # patterns whose matched text legitimately contains words like
+            # "secret" / "system" as part of attack phrasing.
+            if confidence < 0.85 and pattern.provider != "prompt_injection":
                 fp_match, _fp_reason = is_known_false_positive(secret_value)
                 if fp_match:
                     confidence -= 0.40
