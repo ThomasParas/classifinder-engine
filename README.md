@@ -32,16 +32,17 @@ classifinder-engine/
     ├── data/               # fp_wordlist.txt
     └── patterns/
         ├── registry.py     # Pattern registry and SecretPattern dataclass
-        ├── cloud.py        # AWS, GCP, Azure, and other cloud-provider keys (22 patterns)
-        ├── payment.py      # Stripe, PayPal, Square, Shopify, credit cards, crypto (14 patterns)
-        ├── vcs.py          # GitHub, GitLab, Bitbucket, CircleCI, package registries (14 patterns)
-        ├── comms.py        # Slack, Twilio, SendGrid, observability and incident tools (25 patterns)
-        ├── database.py     # PostgreSQL, MySQL, MongoDB, Redis, SSH, env passwords (8 patterns)
-        ├── generic.py      # JWT, Bearer, Basic Auth, generic API keys, high-entropy (5 patterns)
-        └── ai.py           # OpenAI, Anthropic, Cohere, HuggingFace, and other LLM provider keys (18 patterns)
+        ├── cloud.py            # AWS, GCP, Azure, Vercel, Fly.io, Doppler, Vault, and other cloud/infra keys (22 patterns)
+        ├── payment.py          # Stripe, PayPal, Square, Shopify, credit cards, crypto (14 patterns)
+        ├── vcs.py              # GitHub, GitLab, Bitbucket, CircleCI, npm, PyPI, package registries (14 patterns)
+        ├── comms.py            # Slack, Twilio, SendGrid, Datadog, Sentry, PagerDuty, observability and incident tools (25 patterns)
+        ├── database.py         # PostgreSQL, MySQL, MongoDB, Redis, Supabase, SSH, env passwords (8 patterns)
+        ├── generic.py          # JWT, Bearer, Basic Auth, generic API keys, high-entropy (5 patterns)
+        ├── ai.py               # OpenAI, Anthropic (user + admin), Cohere, xAI, Mistral, DeepSeek, HuggingFace, Replicate, Groq, ElevenLabs, AssemblyAI, Deepgram, LangFuse, AWS Bedrock, Vercel AI Gateway, Weights & Biases (18 patterns)
+        └── prompt_injection.py # Role-hijack tokens, jailbreak personas, instruction-override phrases — 4 phase-1 + 6 phase-2 (10 patterns)
 ```
 
-**106 detection patterns** across 7 categories. Each pattern includes a regex, base confidence score, entropy threshold, context keywords, known test values, and remediation guidance.
+**116 detection patterns** — 106 secret types across 7 categories + 10 prompt-injection markers (4 phase-1 high-precision + 6 phase-2 medium-precision). Each pattern includes a regex, base confidence score, entropy threshold, context keywords, known test values, and remediation guidance.
 
 ## How It Works
 
